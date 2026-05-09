@@ -1,6 +1,8 @@
 #include<iostream>
 #include<vector>
 #include<fstream>
+
+
 using namespace std;
 
 class academicEntity {
@@ -10,30 +12,23 @@ public:
 	virtual void display() = 0;
 };
 
-//id,name,email
 class teacher :public academicEntity {
 	float score;
-	vector < course*> assignedCourses;
 public:
-	teacher(const char ID[], const char name[], const char email[]) {
+	teacher(string ID, string name,string email) {
+		this->score = 0;
 		this->ID = ID;
 		this->name = name;
 		this->email = email;
 		
-		fstream studentFile("Teachers.txt");
-		studentFile << ID << "," << name << "," << email << ";" << endl;
+		fstream File("Teachers.txt");
+		File << ID << "," << name << "," << email << ";" << endl;
 	}
-	void addcoursetoteacher(course* obj) {
-		assignedCourses.push_back(obj);
+	void display() {
+		cout <<"ID:"<<ID << " | Name:" << name << " |  Email:" << email << endl;
 	}
-	void showassigncourses() {
-	}
-
 };
-
-
-//id,name,email,type,gpa
-class student :public academicEntity{
+class student :public academicEntity {
 protected:
 	float GPA;
 public:
@@ -43,7 +38,7 @@ public:
 class scholarshipStudent :public student {
 	bool probation = false;
 public:
-	scholarshipStudent(const char ID[], const char name[], const char email[],float GPA) {
+	scholarshipStudent(const char ID[], const char name[], const char email[], float GPA) {
 		this->ID = ID;
 		this->name = name;
 		this->email = email;
@@ -51,7 +46,7 @@ public:
 			probation = true;
 		}
 		fstream studentFile("Students.txt");
-		studentFile << ID << "," << name << "," << email << ",Scholarship," << GPA <<";" << endl;
+		studentFile << ID << "," << name << "," << email << ",Scholarship," << GPA << ";" << endl;
 	}
 
 	void displayGPA() {
@@ -61,13 +56,13 @@ public:
 class exchangeStudent :public student {
 	bool result;
 public:
-	exchangeStudent(const char ID[], const char name[], const char email[],float GPA) {
+	exchangeStudent(const char ID[], const char name[], const char email[], float GPA) {
 		this->ID = ID;
 		this->name = name;
 		this->email = email;
 		this->result = result;
 		if (GPA < 2) {
-			result= true;
+			result = true;
 		}
 		fstream studentFile("Students.txt");
 		studentFile << ID << "," << name << "," << email << ",Exchange," << GPA << ";" << endl;
@@ -88,7 +83,7 @@ public:
 	regularStudent(const char ID[], const char name[], const char email[], float GPA) {
 		this->ID = ID;
 		this->name = name;
-		this->email = email;	
+		this->email = email;
 		fstream studentFile("Students.txt");
 		studentFile << ID << "," << name << "," << email << ",regular," << GPA << ";" << endl;
 	}
@@ -103,18 +98,52 @@ public:
 	}
 };
 
-class course {
+class Assessment {
 protected:
-	string name;
+	float totalAbsolutes;
+	float obtainAbsolutes;
+public:
+};
+class finals :public Assessment {
+	float totalMarks;
+	float obtainMarks;
+public:
+	void setmarks() {}
+};
+class dailylabs :public Assessment {
+	int totalLabs;
+	float totalMarks;
+	float obtainMarks;
+public:
+	void setmarks() {}
+};
+class quizzes :public Assessment {
+	int totalQuizzes;
+	float totalMarks;
+	float obtainMarks;
+public:
+	void setmarks() {}
+};
+class assignments :public Assessment {
+	int totalassignments;
+	float totalMarks;
+	float obtainMarks;
+public:
+	void setmarks() {}
+};
+
+class course{
+protected:
 	int roomno;
 	int time;
 	teacher* teacherassign;
 	char grade;
 	vector <student*> enrollStudents;
 public:
-	virtual void calculateFinalGrade() = 0;
+	string courseName;
+	/*virtual void calculateFinalGrade() = 0;
 	virtual int getExamDuration() = 0;
-	virtual void showStudentinCourse() = 0;
+	virtual void showStudentinCourse() = 0;*/
 };
 class coreCourses :public course {
 	float marks;
@@ -122,19 +151,14 @@ class coreCourses :public course {
 
 public:
 	void setFinalMarks(float total, float obtain) {
-		marks=( obtain/total) *100;
+		marks = (obtain / total) * 100;
 	}
-	
+
 	void teacher(teacher* obj) {
 		teacherassign = obj;
 	}
 	int getExamDuration() {
 		return examDuration;
-	}
-	void showStudentinCourse() {
-		for (int i = 0; i < enrollStudents.size(); i++) {
-			cout << (enrollStudents[i]).name << endl;
-		}
 	}
 	void calculateFinalGrade() {
 		if (marks >= 90)
@@ -148,6 +172,7 @@ public:
 		else
 			grade = 'F';
 	}
+	void showStudentinCourse(){}
 
 };
 class elective :course {
@@ -156,11 +181,11 @@ class elective :course {
 	int examDuration = 2;
 public:
 
-	void setassigmentMarks(float total,float obtain) {
-		assignmentsMarks=( obtain/total )*0.30;
+	void setassigmentMarks(float total, float obtain) {
+		assignmentsMarks = (obtain / total) * 0.30;
 	}
-	void setProjectMarks(float total,float obtain) {
-		projectmarks=(obtain / total)*0.70;
+	void setProjectMarks(float total, float obtain) {
+		projectmarks = (obtain / total) * 0.70;
 	}
 	void teacher(teacher* obj) {
 		teacherassign = obj;
@@ -168,14 +193,10 @@ public:
 	int getExamDuration() {
 		return examDuration;
 	}
-	void showStudentinCourse() {
-		for (int i = 0; i < enrollStudents.size(); i++) {
-			cout <<"Course "<<i+1<<":" << (enrollStudents[i]).name << endl;
-		}
-	}
+
 	void calculateFinalGrade() {
 		float marks = projectmarks + assignmentsMarks;
-		  
+
 		if (marks >= 90)
 			grade = 'A';
 		else if (marks >= 80)
@@ -187,27 +208,25 @@ public:
 		else
 			grade = 'F';
 	}
+
+	void showStudentinCourse() {}
 };
-class labs:public course {
+class labs :public course {
 	float labsMarks[10];
 	int examDuration = 1;
 public:
-	void setLabMarks(int labno,float total,float obtain) {
+	void setLabMarks(int labno, float total, float obtain) {
 		if (labno > 9) {
 			cout << "wrong input" << endl;
 			return;
 		}
-		else if (labno<0) {
+		else if (labno < 0) {
 			cout << "wrong input" << endl;
 			return;
 		}
-		this->labsMarks[labno-1]= (obtain/total)  * 0.10;
+		this->labsMarks[labno - 1] = (obtain / total) * 0.10;
 	}
-	void showStudentinCourse() {
-		for (int i = 0; i < enrollStudents.size(); i++) {
-			cout << "Course " << i + 1 << ":" << (enrollStudents[i]).name << endl;
-		}
-	}
+
 	void calculateFinalGrade() {
 		float marks;
 		for (int i = 0; i < 10; i++) {
@@ -224,43 +243,85 @@ public:
 		else
 			grade = 'F';
 	}
+
+	void showStudentinCourse() {}
 	int getExamDuration() {
 		return examDuration;
 	}
 
 };
 
-class Assessment:public course {
 
-protected:
-	float totalAbsolutes;
-	float obtainAbsolutes;
-public:
-};
-class finals :public Assessment {
-	float totalMarks;
-	float obtainMarks;
-public:
-};
-class labs :public Assessment {
-	int totalLabs;
-	float totalMarks;
-	float obtainMarks;
-public:
-};
-class quizzes :public Assessment {
-	int totalQuizzes;
-	float totalMarks;
-	float obtainMarks;
-public:
-};
-class assignments :public Assessment {
-	int totalassignments;
-	float totalMarks;
-	float obtainMarks;
-public:
-};
+void previousTeachers() {
+
+
+}
+void addTeacher() {
+	string name, email, ID;
+	system("cls");
+	cout << "Enter the ID of new teacher:" << endl;
+	cin >> ID;
+	cout << "Enter the name of new teacher:" << endl;
+	cin >> name;
+	cout << "Enter the email of new teacher:" << endl;
+	cin >> email;
+	teacher t1(ID, name, email) ;	
+	fstream myfile("Teacher.txt");
+	myfile >> name;
+}
+void teacherpage() {
+	system("cls");
+	int c;
+	cout << "1:Previous Teacher Details Page" << endl;
+	cout << "2:New Teacher Adding Page" << endl;
+	cin >> c;
+	switch (c) {
+	case 1:
+		previousTeachers();
+		break;
+	case 2:
+		addTeacher();
+		break;
+	default:
+		cout << "Invalid Input.\nInput Again!" << endl;
+	}
+}
 
 int main() {
+	cout << "WELCOME TO UNIVERSITY MANAGEMENTS SYSTEM" << endl;
+	cout << endl;
+	int c=0;
+	while (1) {
+		cout << "1:Teacher Page" << endl;
+		cout << "2:Student Page" << endl;
+		cout << "3:Courses Page" << endl;
+		cout << "4:Assessments Page" << endl;
+		cout << "5:Venue Page" << endl;
+		cout << "0:Exit the Program" << endl;
+		cin >> c;
+	
+		switch (c) {
+		case 1:
+			teacherpage();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 0:
+			cout << "Closing the program..........." << endl;
+			break;
+		default:
+			cout << "Invalid Input.\nInput Again!" << endl;
+
+		}
+		if (c == 0) {
+			break;
+		}
+	}
 	return 0;
 }
