@@ -2,6 +2,7 @@
 #include<vector>
 #include<fstream>
 void showAllTeachers();
+void mainMenu();
 
 using namespace std;
 
@@ -264,13 +265,14 @@ public:
 
 void assigningCourse() {
 	system("cls");
+	cout << "ENTER THE ASSIGNING THE COURSE TO TEACHER" << endl;
 	cout << "These are All teachers ,we have:" << endl;
 	showAllTeachers();
 	cout << "Enter the ID of t";
-	
 }
 void showAllTeachers() {
 	system("cls");
+	cout << "ENTERING THE TEACHER SHOWING TABLE" << endl;
 	fstream File("Teachers.txt");
 	char ch;
 	cout << "ID,Name,email;" << endl;
@@ -281,20 +283,15 @@ void showAllTeachers() {
 				cout << endl;
 			}
 	}
-	int c;
-	cout << "0:Main Menu" << endl;
-	cin >> c;
-  
-	while (c != 0) {
-		cout << "Invalid input !" << endl;
-		cout << "Input again:" << endl;
-		cin >> c;
-	}
+	cout << "Press any key to return to Main menu" << endl;
+	system("pause");
+
 
 }
 void addTeacher() {
 	string name, email, ID;
 	system("cls");
+	cout << "ADDING NEW TEACHER PAGE" << endl;
 	cout << "Enter the ID of new teacher:" << endl;
 	cin >> ID;
 	cout << "Enter the name of new teacher:" << endl;
@@ -302,26 +299,38 @@ void addTeacher() {
 	cout << "Enter the email of new teacher:" << endl;
 	cin >> email;
 	teacher t1(ID, name, email) ;	
+	cout << "New teacher Added Successfully\nPress any key to return to Main menu" << endl;
+	system("pause");
+	mainMenu();
 }
 void teacherpage() {
 	system("cls");
+	cout << "TEACHER PAGE" << endl;
 	int c;
-	cout << "1:Show All Teacher " << endl;
-	cout << "2:New Teacher Adding Page" << endl;
-	cout << "3:Assigning the course to teacher" << endl;
-	cin >> c;
-	switch (c) {
-	case 1:
-		showAllTeachers();
-		break;
-	case 2:
-		addTeacher();
-		break;
-	case 3:
-		assigningCourse();
-		break;
-	default:
-		cout << "Invalid Input.\nInput Again!" << endl;
+	bool again = true;
+	while (again) {
+		cout << "1:Show All Teacher " << endl;
+		cout << "2:New Teacher Adding Page" << endl;
+		cout << "3:Assigning the course to teacher" << endl;
+		cout << "0: Main menu" << endl;
+		cin >> c;
+		again = false;
+		switch (c) {
+		case 1:
+			showAllTeachers();
+			break;
+		case 2:
+			addTeacher();
+			break;
+		case 3:
+			assigningCourse();
+			break;
+		case 0:
+			mainMenu();
+		default:
+			cout << "Invalid Input.\nInput Again!" << endl;
+			again = true;
+		}
 	}
 }
 
@@ -337,19 +346,17 @@ void showAllStudents() {
 			cout << endl;
 		}
 	}
-	int c;
-	cout << "0:Main Menu" << endl;
-	cin >> c;
 
-	while (c != 0) {
-		cout << "Invalid input !" << endl;
-		cout << "Input again:" << endl;
-		cin >> c;
-	}
+
+	cout << "press any key to return to main menu";
+	system("pause");
+	mainMenu();
 }
 void addStudents() {
+
 	string name, email, ID;
 	system("cls");
+	cout << "ENTER THE ADDING NEW STUDENT PAGE" << endl;
 	cout << "Enter the ID of new student:" << endl;
 	cin >> ID;
 	cout << "Enter the name of new student:" << endl;
@@ -357,29 +364,43 @@ void addStudents() {
 	cout << "Enter the email of new student:" << endl;
 	cin >> email;
 	student t1(ID, name, email);
+	cout << "Student Added Successfully" << endl;
+	cout << "Enter any key to go to main menu" << endl;
+	system("cls");
+	mainMenu();
 }
 void assigningCoursetoStudent(){
 
 }
 void studentpage() {
 	system("cls");
+	cout << "ENTERING THE STUDENT PAGE" << endl;
 	int c;
-	cout << "1:Show All students " << endl;
-	cout << "2:New Student Adding Page" << endl;
-	cout << "3:Register the course for Student" << endl;
-	cin >> c;
-	switch (c) {
-	case 1:
-		showAllStudents();
-		break;
-	case 2:
-		addStudents();
-		break;
-	case 3:
-		assigningCoursetoStudent();
-		break;
-	default:
-		cout << "Invalid Input.\nInput Again!" << endl;
+	
+	bool again=true;
+	while (again) {
+		again = false;
+		cout << "1:Show All students " << endl;
+		cout << "2:New Student Adding Page" << endl;
+		cout << "3:Register the course for Student" << endl;
+		cout << "0:Main Menu" << endl;
+		cin >> c;
+		switch (c) {
+		case 1:
+			showAllStudents();
+			break;
+		case 2:
+			addStudents();
+			break;
+		case 3:
+			assigningCoursetoStudent();
+			break;
+		case 0:
+			mainMenu();
+		default:
+			cout << "Invalid Input.\nInput Again!" << endl;
+			again = false;
+		}
 	}
 }
 
@@ -422,18 +443,23 @@ void addCourse() {
 void coursepage() {
 	system("cls");
 	int c;
-	cout << "1:Show All Courses " << endl;
-	cout << "2:Add new Course" << endl;
-	cin >> c;
-	switch (c) {
-	case 1:
-		showAllCourses();
-		break;
-	case 2:
-		addCourse();
-		break;
-	default:
-		cout << "Invalid Input.\nInput Again!" << endl;
+	bool again = true;
+	while (again) {
+		again = false;
+		cout << "1:Show All Courses " << endl;
+		cout << "2:Add new Course" << endl;
+		cin >> c;
+		switch (c) {
+		case 1:
+			showAllCourses();
+			break;
+		case 2:
+			addCourse();
+			break;
+		default:
+			cout << "Invalid Input.\nInput Again!" << endl;
+			again = true;
+		}
 	}
 }
 
@@ -442,36 +468,62 @@ void electiveAssessment() {}
 void labAssessment(){}
 void assessmentpage() {
 	int c;
-	cout << "1:Assessment of Core" << endl;
-	cout << "2:Assessment of Elective" << endl;
-	cout << "3:Assessment of labs" << endl;
-	cout << "0:return to Main Menu" << endl;
-	cin >> c;
-
-	switch (c) {
-	case 1:
-		coreAssessment();
-		break;
-	case 2:
-		electiveAssessment();
-		break;
-	case 3:
-		labAssessment();
-		break;
-	case 0:
-		cout << "Closing the program..........." << endl;
-		break;
-	default:
-		cout << "Invalid Input.\nInput Again!" << endl;
-
+	system("cls");
+	
+	bool again = true;
+	while (again) {
+		again = false;
+		cout << "1:Assessment of Core" << endl;
+		cout << "2:Assessment of Elective" << endl;
+		cout << "3:Assessment of labs" << endl;
+		cout << "0:return to Main Menu" << endl;
+		cin >> c;
+		switch (c) {
+		case 1:
+			coreAssessment();
+			break;
+		case 2:
+			electiveAssessment();
+			break;
+		case 3:
+			labAssessment();
+			break;
+		case 0:
+			mainMenu();
+			break;
+		default:
+			cout << "Invalid Input.\nInput Again!" << endl;
+			again = true;
+		}
 	}
 }
 
-int main() {
-	cout << "WELCOME TO UNIVERSITY MANAGEMENTS SYSTEM" << endl;
-	cout << endl;
-	int c=0;
+void venuepage() {
+	system("cls");
+	fstream File("Venues.txt");
+	char ch;
+	cout << "Room no,Capacity,available;" << endl;
+	while (File >> ch) {
+
+		cout << ch;
+		if (ch == ';') {
+			cout << endl;
+		}
+	}
+	cout << "Enter any key to go to main menu" << endl;
+	system("cls");
+	mainMenu();
+
+}
+
+
+void mainMenu() {
+	
+	int c = 0;
 	while (1) {
+		system("cls");
+		cout << "WELCOME TO UNIVERSITY MANAGEMENTS SYSTEM" << endl;
+		cout << endl;
 		cout << "1:Teacher Page" << endl;
 		cout << "2:Student Page" << endl;
 		cout << "3:Courses Page" << endl;
@@ -479,7 +531,7 @@ int main() {
 		cout << "5:Venue Page" << endl;
 		cout << "0:Exit the Program" << endl;
 		cin >> c;
-	
+
 		switch (c) {
 		case 1:
 			teacherpage();
@@ -494,9 +546,11 @@ int main() {
 			assessmentpage();
 			break;
 		case 5:
+			venuepage();
 			break;
 		case 0:
 			cout << "Closing the program..........." << endl;
+			return;
 			break;
 		default:
 			cout << "Invalid Input.\nInput Again!" << endl;
@@ -506,5 +560,9 @@ int main() {
 			break;
 		}
 	}
+}
+int main() {
+	mainMenu();
+	
 	return 0;
 }
