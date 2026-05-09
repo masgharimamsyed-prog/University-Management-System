@@ -1,7 +1,7 @@
 #include<iostream>
 #include<vector>
 #include<fstream>
-
+void showAllTeachers();
 
 using namespace std;
 
@@ -32,8 +32,18 @@ class student :public academicEntity {
 protected:
 	float GPA;
 public:
-	virtual void displayGPA() = 0;
-	virtual void showTranscript() = 0;
+	student(string ID="", string name="", string email="") {
+	
+		this->ID = ID;
+		this->name = name;
+		this->email = email;
+
+		fstream File("Students.txt");
+		File << ID << "," << name << "," << email << ";" << endl;
+	}
+	void display() {
+		cout << "ID:" << ID << " | Name:" << name << " |  Email:" << email << endl;
+	}
 };
 class scholarshipStudent :public student {
 	bool probation = false;
@@ -134,13 +144,18 @@ public:
 
 class course{
 protected:
-	int roomno;
-	int time;
-	teacher* teacherassign;
+	string code, name, type, teacher;
 	char grade;
-	vector <student*> enrollStudents;
 public:
-	string courseName;
+	course(string code,string name,string type,string teacher) {
+		this->code = code;
+		this->name = name;
+		this->type = type;
+		this->teacher = teacher;
+
+		fstream File("Courses.txt");
+		File << code<< "," << name << "," << type <<"," <<teacher <<";" << endl;
+	}
 	/*virtual void calculateFinalGrade() = 0;
 	virtual int getExamDuration() = 0;
 	virtual void showStudentinCourse() = 0;*/
@@ -154,9 +169,7 @@ public:
 		marks = (obtain / total) * 100;
 	}
 
-	void teacher(teacher* obj) {
-		teacherassign = obj;
-	}
+	
 	int getExamDuration() {
 		return examDuration;
 	}
@@ -187,9 +200,7 @@ public:
 	void setProjectMarks(float total, float obtain) {
 		projectmarks = (obtain / total) * 0.70;
 	}
-	void teacher(teacher* obj) {
-		teacherassign = obj;
-	}
+
 	int getExamDuration() {
 		return examDuration;
 	}
@@ -251,9 +262,34 @@ public:
 
 };
 
+void assigningCourse() {
+	system("cls");
+	cout << "These are All teachers ,we have:" << endl;
+	showAllTeachers();
+	cout << "Enter the ID of t";
+	
+}
+void showAllTeachers() {
+	system("cls");
+	fstream File("Teachers.txt");
+	char ch;
+	cout << "ID,Name,email;" << endl;
+	while (File>>ch) {
 
-void previousTeachers() {
-
+			cout << ch;
+			if (ch == ';'){
+				cout << endl;
+			}
+	}
+	int c;
+	cout << "0:Main Menu" << endl;
+	cin >> c;
+  
+	while (c != 0) {
+		cout << "Invalid input !" << endl;
+		cout << "Input again:" << endl;
+		cin >> c;
+	}
 
 }
 void addTeacher() {
@@ -266,24 +302,168 @@ void addTeacher() {
 	cout << "Enter the email of new teacher:" << endl;
 	cin >> email;
 	teacher t1(ID, name, email) ;	
-	fstream myfile("Teacher.txt");
-	myfile >> name;
 }
 void teacherpage() {
 	system("cls");
 	int c;
-	cout << "1:Previous Teacher Details Page" << endl;
+	cout << "1:Show All Teacher " << endl;
 	cout << "2:New Teacher Adding Page" << endl;
+	cout << "3:Assigning the course to teacher" << endl;
 	cin >> c;
 	switch (c) {
 	case 1:
-		previousTeachers();
+		showAllTeachers();
 		break;
 	case 2:
 		addTeacher();
 		break;
+	case 3:
+		assigningCourse();
+		break;
 	default:
 		cout << "Invalid Input.\nInput Again!" << endl;
+	}
+}
+
+void showAllStudents() {
+	system("cls");
+	fstream File("Students.txt");
+	char ch;
+	cout << "ID,Name,email;" << endl;
+	while (File >> ch) {
+
+		cout << ch;
+		if (ch == ';') {
+			cout << endl;
+		}
+	}
+	int c;
+	cout << "0:Main Menu" << endl;
+	cin >> c;
+
+	while (c != 0) {
+		cout << "Invalid input !" << endl;
+		cout << "Input again:" << endl;
+		cin >> c;
+	}
+}
+void addStudents() {
+	string name, email, ID;
+	system("cls");
+	cout << "Enter the ID of new student:" << endl;
+	cin >> ID;
+	cout << "Enter the name of new student:" << endl;
+	cin >> name;
+	cout << "Enter the email of new student:" << endl;
+	cin >> email;
+	student t1(ID, name, email);
+}
+void assigningCoursetoStudent(){
+
+}
+void studentpage() {
+	system("cls");
+	int c;
+	cout << "1:Show All students " << endl;
+	cout << "2:New Student Adding Page" << endl;
+	cout << "3:Register the course for Student" << endl;
+	cin >> c;
+	switch (c) {
+	case 1:
+		showAllStudents();
+		break;
+	case 2:
+		addStudents();
+		break;
+	case 3:
+		assigningCoursetoStudent();
+		break;
+	default:
+		cout << "Invalid Input.\nInput Again!" << endl;
+	}
+}
+
+void showAllCourses() {
+	system("cls");
+	fstream File("Courses.txt");
+	char ch;
+	cout << "Code,Name,type,teacher;" << endl;
+	while (File >> ch) {
+
+		cout << ch;
+		if (ch == ';') {
+			cout << endl;
+		}
+	}
+	int c;
+	cout << "0:Main Menu" << endl;
+	cin >> c;
+
+	while (c != 0) {
+		cout << "Invalid input !" << endl;
+		cout << "Input again:" << endl;
+		cin >> c;
+	}
+}
+void addCourse() {
+
+	string code,name,type,teacher;
+	system("cls");
+	cout << "Enter the code of new course:" << endl;
+	cin >> code;
+	cout << "Enter the name of new course:" << endl;
+	cin >> name;
+	cout << "Enter the type of new course:" << endl;
+	cin >> type;
+	cout << "Enter the teacher of new course:" << endl;
+	cin >> teacher;
+	course c1(code,name,type,teacher);
+}
+void coursepage() {
+	system("cls");
+	int c;
+	cout << "1:Show All Courses " << endl;
+	cout << "2:Add new Course" << endl;
+	cin >> c;
+	switch (c) {
+	case 1:
+		showAllCourses();
+		break;
+	case 2:
+		addCourse();
+		break;
+	default:
+		cout << "Invalid Input.\nInput Again!" << endl;
+	}
+}
+
+void coreAssessment(){}
+void electiveAssessment() {}
+void labAssessment(){}
+void assessmentpage() {
+	int c;
+	cout << "1:Assessment of Core" << endl;
+	cout << "2:Assessment of Elective" << endl;
+	cout << "3:Assessment of labs" << endl;
+	cout << "0:return to Main Menu" << endl;
+	cin >> c;
+
+	switch (c) {
+	case 1:
+		coreAssessment();
+		break;
+	case 2:
+		electiveAssessment();
+		break;
+	case 3:
+		labAssessment();
+		break;
+	case 0:
+		cout << "Closing the program..........." << endl;
+		break;
+	default:
+		cout << "Invalid Input.\nInput Again!" << endl;
+
 	}
 }
 
@@ -305,10 +485,13 @@ int main() {
 			teacherpage();
 			break;
 		case 2:
+			studentpage();
 			break;
 		case 3:
+			coursepage();
 			break;
 		case 4:
+			assessmentpage();
 			break;
 		case 5:
 			break;
