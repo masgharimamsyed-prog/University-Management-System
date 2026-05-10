@@ -42,6 +42,8 @@ public:
 	string getname() {
 		return name;
 	}
+	friend void saveDataforTeacher();
+
 };
 
 class student :public academicEntity {
@@ -52,17 +54,20 @@ public:
 	virtual void display() = 0;
 	virtual void setGPA(int GPA) = 0;
 	friend void viewStudents();
+	 friend void saveDataforStudent();
 
 };
 class scholarshipStudent :public student {
+protected:
 	bool probation;
 public:
-	scholarshipStudent(int ID=0, string name="", string email="",float GPA=0){
+	scholarshipStudent(int ID = 0, string name = "", string email = "", float GPA = 0, bool extra = 1) {
 		this->ID = ID;
 		this->name = name;
 		this->email = email;
 		this->GPA = GPA;
 		this->type = "scholarship";
+		probation = extra;
 		if (GPA<3.3 &&GPA!=0) {
 			probation = true;
 		}
@@ -84,16 +89,19 @@ public:
 			probation = false;
 		}
 	}
+	friend void saveDataforStudent();
 
 };
 class exchangeStudent :public student {
+protected:
 	bool fail;
 public:
-	exchangeStudent(int ID=0, string  name="", string email = "", float GPA = 0) {
+	exchangeStudent(int ID=0, string  name="", string email = "", float GPA = 0, bool extra = 1) {
 		this->ID = ID;
 		this->name = name;
 		this->email = email;
 		this->type = "exchange";
+		fail = extra;
 		this->GPA = GPA;
 		if (GPA < 2) {
 			fail=true;
@@ -106,6 +114,7 @@ public:
 	void display() {
 		cout << "Id:" << ID << ",name:" << name << ",email:" << email << ",GPA:" << GPA << ",type:" << type << ",fail:" << fail << endl;
 	}
+	friend void saveDataforStudent();
 
 	void setGPA(int GPA) {
 		this->GPA = GPA;
@@ -118,17 +127,19 @@ public:
 	}
 };
 class regularStudent :public student {
+protected:
 	bool feeStatus;
 public:
-	regularStudent(int ID = 0, string name = "", string email= "", float GPA = 0) {
+	regularStudent(int ID = 0, string name = "", string email= "", float GPA = 0, bool extra = 1) {
 		this->ID = ID;
 		this->name = name;
 		this->email = email;
 		this->type = "regular";
+		feeStatus = extra;
 		this->GPA = GPA;
 		feeStatus = true;
 	}
-
+	
 	void display() {
 		cout << "Id:" << ID << ",name:" << name << ",email:" << email << ",GPA:" << GPA << ",type:" << type << ",feepay:" << feeStatus << endl;
 	}
@@ -136,7 +147,7 @@ public:
 	void setGPA(int GPA) {
 		this->GPA = GPA;
 	}
-
+	friend void saveDataforStudent();
 	void setfeeStatus(bool fee) {
 		feeStatus= fee;
 	}
@@ -163,6 +174,8 @@ public:
 	void setno(int i) {
 		noofStudents = i;
 	}
+
+	friend void saveDataforCourse();
 };
 class core :public course {
 
@@ -173,6 +186,7 @@ public:
 		this->obj = obj;
 		this->type = "core";
 	}
+	friend void saveDataforCourse();
 
 	void display() {
 		cout << "code:" << code << ",name:" << name << ",type:" << type << ",teacher:" << obj->name;
@@ -209,6 +223,7 @@ public:
 		this->obj = obj;
 		this->type = "elective";
 	}
+	friend void saveDataforCourse();
 	void setno(int i) {
 		noofStudents = i;
 	}
@@ -243,6 +258,7 @@ public:
 		this->obj = obj;
 		this->type = "lab";
 	}
+	friend void saveDataforCourse();
 
 	void setno(int i) {
 		noofStudents = i;
@@ -329,9 +345,9 @@ void saveData();
 void loadDataforTeacher();//
 void loadDataforStudent();//
 void loadDataforCourse();//
-void saveDataforTeacher();
-void saveDataforStudent();
-void saveDataforCourse();
+void saveDataforTeacher();//
+void saveDataforStudent();//
+void saveDataforCourse();//
  
    
 
@@ -369,6 +385,9 @@ void loadDataforStudent() {
 	float GPA;
 	string tempscore;
 	string type;
+	bool extra;
+	string extratemp;
+
 	while (getline(file, tempID, ',')) {
 		id = stoi(tempID);
 		getline(file, name, ',');
@@ -376,15 +395,23 @@ void loadDataforStudent() {
 		getline(file, tempscore, ',');
 		GPA= stof(tempscore);
 		getline(file, type, ',');
+		getline(file, extratemp, ',');
+
+		if (extratemp == "1" || extratemp == "true") {
+			extra = true;
+		}
+		else {
+			extra =false;
+		}
 
 		if (type == "scholarship") {
-			STUDENTS.push_back(new scholarshipStudent(id, name, email, GPA));
+			STUDENTS.push_back(new scholarshipStudent(id, name, email, GPA,extra));
 		}
 		else if (type == "exchange") {
-			STUDENTS.push_back(new exchangeStudent(id, name, email, GPA));
+			STUDENTS.push_back(new exchangeStudent(id, name, email, GPA,extra));
 		}
 		else if (type == "regular") {
-			STUDENTS.push_back(new regularStudent(id, name, email, GPA));
+			STUDENTS.push_back(new regularStudent(id, name, email, GPA,extra));
 		}
         
 	}
@@ -466,11 +493,59 @@ void saveData()
 	saveDataforCourse();
 }
 void saveDataforTeacher(){
+	fstream file("Teachers.txt");
+	for (int i = 0; i < TEACHERS.size(); i++) {
+		file << TEACHERS[i]->ID << "," << TEACHERS[i]->name << "," << TEACHERS[i]->email << "," << TEACHERS[i]->avgScore<<",";
+		file << endl;
+	}
+}
+void saveDataforStudent() {
+	fstream file("Students.txt");
 
+	for (int i = 0; i < STUDENTS.size(); i++) {
+
+		if (STUDENTS[i]->type == "scholarship") {
+
+			scholarshipStudent* ptr =
+				(scholarshipStudent*)STUDENTS[i];
+
+			file << ptr->ID << ","<< ptr->name << ","<< ptr->email << ","<< ptr->GPA << ","
+				<< ptr->type << ","
+				<< ptr->probation << ",";
+
+		}
+
+		else if (STUDENTS[i]->type == "regular") {
+
+			regularStudent* ptr =
+				(regularStudent*)STUDENTS[i];
+
+			file << ptr->ID << ","<< ptr->name << ","<< ptr->email << ","<< ptr->GPA << ","<< ptr->type << ","<< ptr->feeStatus << ",";
+
+		}
+
+		else if (STUDENTS[i]->type == "exchange") {
+
+			exchangeStudent* ptr =
+				(exchangeStudent*)STUDENTS[i];
+
+			file << ptr->ID << ","<< ptr->name << ","<< ptr->email << ","<< ptr->GPA << ","<< ptr->type << ","<< ptr->fail << ",";
+
+		}
+
+		file << endl;
+	}
 }
-void saveDataforStudent(){
-}
+
 void saveDataforCourse(){
+	fstream file("Courses.txt");
+	for (int i = 0; i < COURSES.size(); i++) {
+		file << COURSES[i]->code << "," << COURSES[i]->name << "," << COURSES[i]->type << "," << COURSES[i]->obj->name << "," << COURSES[i]->noofStudents << ","  ; 
+		for (int j = 0; j < COURSES[i]->noofStudents; j++) {
+			file << COURSES[i]->itsStudents[i]->name<<",";
+		}
+			file << endl;
+	}
 }
 
 void addStudent()
