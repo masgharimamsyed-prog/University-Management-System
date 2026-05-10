@@ -142,15 +142,22 @@ public:
 	}
 };
 
+vector <student*> STUDENTS;
 class course :public teacher {
 protected:
-	int code;
-	string name, type;
+	vector <student*> itsStudents;
+	string type;
 	teacher* obj;
+	int code;
+	string name;
 public:
 	course() {}
+	virtual void assignCourse(teacher* obj) = 0;
 	virtual void display() = 0;
-
+	virtual void showitsStudents() = 0;
+	friend void assignCourseToTeacher();
+	virtual void AddingStudenttoCourse(student *obj) = 0;
+	friend void registerStudentInCourse();
 };
 class core :public course {
 
@@ -164,6 +171,23 @@ public:
 
 	void display() {
 		cout << "code:" << code << ",name:" << name << ",type:" << type << ",teacher:" << obj->name;
+	}
+	void showitsStudents() {
+		for (int i = 0; i < itsStudents.size(); i++) {
+			cout << "student" << i + 1 << ":";
+				itsStudents[i]->display();
+		}
+	}
+	void assignCourse(teacher *obj) {
+		this->obj = obj;
+	}
+	void AddingStudenttoCourse(student* obj) {
+		if (STUDENTS.size() < 3) {
+			itsStudents.push_back(obj);
+		}
+		else {
+			cout << "no more seats" << endl;
+		}
 	}
 
 };
@@ -180,7 +204,23 @@ public:
 	void display() {
 		cout << "code:" << code << ",name:" << name << ",type:" << type << ",teacher:" << obj->name;
 	}
-
+	void assignCourse(teacher* obj) {
+		this->obj = obj;
+	}
+	void showitsStudents() {
+		for (int i = 0; i < itsStudents.size(); i++) {
+			cout << "student" << i + 1 << ":";
+			itsStudents[i]->display();
+		}
+	}
+	void AddingStudenttoCourse(student* obj) {
+		if (STUDENTS.size() < 3) {
+			itsStudents.push_back(obj);
+		}
+		else {
+			cout << "no more seats" << endl;
+		}
+	}
 };
 class lab :public course {
 
@@ -194,6 +234,23 @@ public:
 
 	void display() {
 		cout << "code:" << code << ",name:" << name << ",type:" << type << ",teacher:" << obj->name;
+	}
+	void assignCourse(teacher* obj) {
+		this->obj = obj;
+	}
+	void showitsStudents() {
+		for (int i = 0; i < itsStudents.size(); i++) {
+			cout << "student" << i + 1 << ":";
+			itsStudents[i]->display();
+		}
+	}
+	void AddingStudenttoCourse(student* obj) {
+		if (STUDENTS.size() < 3) {
+			itsStudents.push_back(obj);
+		}
+		else {
+			cout << "no more seats" << endl;
+		}
 	}
 };
 
@@ -238,7 +295,6 @@ public:
 
 
 vector <teacher*> TEACHERS;
-vector <student*> STUDENTS;
 vector <course*> COURSES;
 vector <venue*>VENUES;
 vector <Assessment*> ASSESS;
@@ -250,14 +306,12 @@ void addTeacher();//
 void viewTeachers();//
 void addCourse();//
 void viewCourses();//
-void registerStudentInCourse();
+void registerStudentInCourse();//
 void createSection();
-void assignCourseToTeacher();
+void assignCourseToTeacher();//
 void saveData();
 
-void loadData() {
-
-}
+void loadData() {}
 
 void addStudent()
 {
@@ -360,7 +414,7 @@ void addCourse()
 
 	int type;
 	
-	int type;
+	
 	cout << "\nEnter Course Type:\n";
 	cout << "1. Core Course\n";
 	cout << "2. Elective Course\n";
@@ -374,13 +428,22 @@ void addCourse()
 	}
 	viewTeachers();
 	string t_name;
-	teacher* obj;
-	cout << "Select Teacher by name which teaches this course:" << endl;
-	cin>>t_name;
-
-	for (int i = 0; i < TEACHERS.size(); i++) {
-		if (((*TEACHERS[i]).getname()) == t_name){
-			obj = TEACHERS[i];
+	teacher* obj=NULL;
+	while (1) {
+		cout << "Select Teacher by name which teaches this course:" << endl;
+		cin >> t_name;
+		bool found = true;
+		for (int i = 0; i < TEACHERS.size(); i++) {
+			if (((*TEACHERS[i]).getname()) == t_name) {
+				obj = TEACHERS[i];
+			}
+		}
+		if (found) {
+			cout << "No such exist " << endl;
+			obj = NULL;
+		}
+		else {
+			break;
 		}
 	}
 	if (type == 1)
@@ -399,14 +462,71 @@ void addCourse()
 
 void viewCourses()
 {
-	for (int i = 0; i < TEACHERS.size(); i++) {
-		TEACHERS[i]->display();
+	for (int i = 0; i < COURSES.size(); i++) {
+		COURSES[i]->display();
 	}
+	int cl;
+
+	cout << "If want to know the details of student in it,then press 1 otherwsie 0" << endl;
+	cin >> cl;
+	while (1) {
+		if (cl == 1) {
+			for (int i = 0; i < COURSES.size(); i++) {
+				COURSES[i]->display();
+				COURSES[i]->showitsStudents();
+			}
+			break;
+		}
+		else if (cl == 0) {
+			break;
+		}
+		else {
+			cout << "invalid input ,input again" << endl;
+			cin >> cl;
+		}
+	}
+	system("pause");
+
 }
 
-void registerStudentInCourse()
-{
+void registerStudentInCourse(){
+	cout << "Course we educate" << endl;
+	viewCourses();
+	cout << "Teachers we have:" << endl;
+	viewTeachers();
+	string t_name;
+	student* t_obj = nullptr;
+	int C_code;
+	cout << "Enter the student you want to assign" << endl;
+	cin >> t_name;
+	bool f;
+	for (int i = 0; i < STUDENTS.size(); i++) {
+		if (STUDENTS[i]->name == t_name) {
+			t_obj = STUDENTS[i];
+			f = true;
+		}
+	}
 
+	if (!f) {
+		cout << "No ,such course exist !" << endl;
+	}
+	cout << "Enter the course code you want to assign the student" << endl;
+	cin >> C_code;
+	bool found=true;
+	for (int i = 0; i < COURSES.size(); i++) {
+		if (COURSES[i]->code == C_code) {
+			COURSES[i]->AddingStudenttoCourse(t_obj);
+			found = true;
+		}
+	}
+
+	if (!found) {
+		t_obj = nullptr;
+		cout << "No ,such course exist !" << endl;
+	}
+	else {
+		cout << "assigned!" << endl;
+	}
 }
 
 void createSection()
@@ -416,6 +536,43 @@ void createSection()
 
 void assignCourseToTeacher()
 {
+	cout << "Course we educate" << endl;
+	viewCourses();
+	cout << "Teachers we have:" << endl;
+	viewTeachers();
+	string t_name;
+	teacher* t_obj = nullptr;
+	int C_code;
+	cout << "Enter the teacher you want to assign" << endl;
+	cin >> t_name;
+	bool f;
+	for (int i = 0; i < TEACHERS.size(); i++) {
+		if (TEACHERS[i]->name == t_name) {
+			t_obj = TEACHERS[i];
+			f = true;
+		}
+	}
+
+	if (!f) {
+		cout << "No ,such course exist !" << endl;
+	}
+	cout << "Enter the course code you want to assign the teacher" << endl;
+	cin >> C_code;
+	bool found=true;
+	for (int i = 0; i < COURSES.size(); i++) {
+		if (COURSES[i]->code == C_code) {
+			COURSES[i]->obj = t_obj;
+			found = true;
+		}
+	}
+
+	if (!found) {
+		cout << "No ,such course exist !" << endl;
+		t_obj = nullptr;
+	}
+	else {
+		cout << "assigned!" << endl;
+	}
 
 }
 
