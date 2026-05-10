@@ -585,9 +585,6 @@ void saveData()
 int main()
 {
 	int c;
-
-
-
 	while (1)
 	{
 		system("cls");
@@ -595,7 +592,6 @@ int main()
 		cout << "\n=====================================\n";
 		cout << " FAST Academic Office System\n";
 		cout << "=====================================\n";
-
 		cout << "1. Add Student\n";
 		cout << "2. View Students\n";
 		cout << "3. Add Teacher\n";
