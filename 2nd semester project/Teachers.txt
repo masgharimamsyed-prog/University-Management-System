@@ -1,1 +1,4 @@
-1,asghar,asghar@gmail.com;
+101,Ali Hassan,ali@fast.edu,4.5
+102,Sara Khan,sara@fast.edu,3.8
+103,Usman Tariq,usman@fast.edu,4.2
+234,usma,us@gmail.com,0

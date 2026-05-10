@@ -1,1 +1,7 @@
-
+201,Ahmed Raza,ahmed@fast.edu,3.7,regular,1
+202,Fatima Malik,fatima@fast.edu,3.1,scholarship,1
+203,Bilal Anwar,bilal@fast.edu,1.8,exchange,1
+204,Zara Sheikh,zara@fast.edu,3.9,scholarship,0
+205,Omar Siddiqui,omar@fast.edu,2.5,regular,1
+111,asgharimam,l250@gamil.com,3.4,regular,1
+112,akhalq,ak@gamil.com,2.3,scholarship,1
