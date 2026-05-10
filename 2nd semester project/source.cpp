@@ -329,6 +329,9 @@ void saveData();
 void loadDataforTeacher();//
 void loadDataforStudent();//
 void loadDataforCourse();//
+void saveDataforTeacher();
+void saveDataforStudent();
+void saveDataforCourse();
  
    
 
@@ -453,6 +456,21 @@ void loadDataforCourse() {
 		}
 
 	}
+}
+
+
+void saveData()
+{
+   saveDataforTeacher();
+	saveDataforStudent();
+	saveDataforCourse();
+}
+void saveDataforTeacher(){
+
+}
+void saveDataforStudent(){
+}
+void saveDataforCourse(){
 }
 
 void addStudent()
@@ -718,11 +736,7 @@ void assignCourseToTeacher()
 
 }
 
-void saveData()
-{
 
-
-}
 
 int main()
 {
