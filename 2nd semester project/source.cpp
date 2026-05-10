@@ -143,8 +143,10 @@ public:
 };
 
 vector <student*> STUDENTS;
+
 class course :public teacher {
 protected:
+	int noofStudents = 0;
 	vector <student*> itsStudents;
 	string type;
 	teacher* obj;
@@ -158,6 +160,9 @@ public:
 	friend void assignCourseToTeacher();
 	virtual void AddingStudenttoCourse(student *obj) = 0;
 	friend void registerStudentInCourse();
+	void setno(int i) {
+		noofStudents = i;
+	}
 };
 class core :public course {
 
@@ -183,11 +188,15 @@ public:
 	}
 	void AddingStudenttoCourse(student* obj) {
 		if (STUDENTS.size() < 3) {
+			noofStudents++;
 			itsStudents.push_back(obj);
 		}
 		else {
 			cout << "no more seats" << endl;
 		}
+	}
+	void setno(int i) {
+		noofStudents = i;
 	}
 
 };
@@ -200,7 +209,9 @@ public:
 		this->obj = obj;
 		this->type = "elective";
 	}
-
+	void setno(int i) {
+		noofStudents = i;
+	}
 	void display() {
 		cout << "code:" << code << ",name:" << name << ",type:" << type << ",teacher:" << obj->name;
 	}
@@ -215,6 +226,7 @@ public:
 	}
 	void AddingStudenttoCourse(student* obj) {
 		if (STUDENTS.size() < 3) {
+			noofStudents++;
 			itsStudents.push_back(obj);
 		}
 		else {
@@ -232,6 +244,9 @@ public:
 		this->type = "lab";
 	}
 
+	void setno(int i) {
+		noofStudents = i;
+	}
 	void display() {
 		cout << "code:" << code << ",name:" << name << ",type:" << type << ",teacher:" << obj->name;
 	}
@@ -246,6 +261,7 @@ public:
 	}
 	void AddingStudenttoCourse(student* obj) {
 		if (STUDENTS.size() < 3) {
+			noofStudents++;
 			itsStudents.push_back(obj);
 		}
 		else {
@@ -299,7 +315,7 @@ vector <course*> COURSES;
 vector <venue*>VENUES;
 vector <Assessment*> ASSESS;
 
-void loadData();
+void loadData();//
 void addStudent();//
 void viewStudents();//
 void addTeacher();//
@@ -310,8 +326,134 @@ void registerStudentInCourse();//
 void createSection();
 void assignCourseToTeacher();//
 void saveData();
+void loadDataforTeacher();//
+void loadDataforStudent();//
+void loadDataforCourse();//
 
-void loadData() {}
+
+
+void loadData() {
+	loadDataforTeacher();
+	loadDataforStudent();
+	loadDataforCourse();
+}
+void loadDataforTeacher() {
+	TEACHERS.clear();
+	fstream file("Teachers.txt");
+	int id;
+	string tempID;
+	string name;
+	string email;
+	float avgScore;
+	string tempscore;
+	while (getline(file,tempID ,',')){
+		id = stoi(tempID);
+		getline(file, name, ',');
+		getline(file, email, ',');
+		getline(file, tempscore, ',');
+		avgScore = stof(tempscore);
+
+		TEACHERS.push_back(new teacher(id, name, email, avgScore));
+	}
+}
+void loadDataforStudent() {
+	STUDENTS.clear();
+	fstream file("Students.txt");
+	int id;
+	string tempID;
+	string name;
+	string email;
+	float GPA;
+	string tempscore;
+	string type;
+	while (getline(file, tempID, ',')) {
+		id = stoi(tempID);
+		getline(file, name, ',');
+		getline(file, email, ',');
+		getline(file, tempscore, ',');
+		GPA= stof(tempscore);
+		getline(file, type, ',');
+
+		if (type == "scholarship") {
+			STUDENTS.push_back(new scholarshipStudent(id, name, email, GPA));
+		}
+		else if (type == "exchange") {
+			STUDENTS.push_back(new exchangeStudent(id, name, email, GPA));
+		}
+		else if (type == "regular") {
+			STUDENTS.push_back(new regularStudent(id, name, email, GPA));
+		}
+        
+	}
+}
+void loadDataforCourse() {
+	COURSES.clear();
+	fstream file("Courses.txt");
+	int id;
+	string tempID;
+
+	string name;
+
+	string type;
+
+	string teachername;
+
+	int no;
+	string tempno;
+	teacher* obj=NULL;
+	while (getline(file, tempID, ',')) {
+		id = stoi(tempID);
+		getline(file, name, ',');
+		getline(file, type, ',');
+		getline(file, teachername, ',');//
+
+		for (int i = 0; i < TEACHERS.size(); i++) {
+			if (TEACHERS[i]->name == teachername) {
+				obj = TEACHERS[i];
+			}
+		}
+		
+		getline(file, tempno, ',');//no of students in it
+		no = stoi(tempno);
+		
+		vector <student*> obj1;
+		for (int i = 0; i < no; i++) {
+			string studentname;
+			getline(file, studentname, ',');
+			for (int j = 0; j < STUDENTS.size(); j++) {
+				if (STUDENTS[i]->name == studentname) {
+					obj1.push_back( STUDENTS[i]);
+				}
+			}
+		}
+
+		if (type == "core") {
+			COURSES.push_back(new core(id, name, obj ));
+			COURSES[COURSES.size() - 1]->setno(no);
+			for (int k = 0; k < no; k++) {
+				COURSES[COURSES.size() - 1]->AddingStudenttoCourse(obj1[k]);
+			}
+
+		}
+		else if (type == "lab") {
+			COURSES.push_back(new lab(id, name,obj ));
+			COURSES[COURSES.size() - 1]->setno(no);
+			for (int k = 0; k < no; k++) {
+				COURSES[COURSES.size() - 1]->AddingStudenttoCourse(obj1[k]);
+			}
+
+		}
+		else if (type == "elective") {
+			COURSES.push_back(new elective(id, name,obj));
+			COURSES[COURSES.size() - 1]->setno(no);
+			for (int k = 0; k < no; k++) {
+				COURSES[COURSES.size() - 1]->AddingStudenttoCourse(obj1[k]);
+			}
+
+		}
+
+	}
+}
 
 void addStudent()
 {
@@ -492,8 +634,8 @@ void viewCourses()
 void registerStudentInCourse(){
 	cout << "Course we educate" << endl;
 	viewCourses();
-	cout << "Teachers we have:" << endl;
-	viewTeachers();
+	cout << "Student we have:" << endl;
+	viewStudents();
 	string t_name;
 	student* t_obj = nullptr;
 	int C_code;
@@ -585,6 +727,7 @@ void saveData()
 int main()
 {
 	int c;
+	loadData();
 	while (1)
 	{
 		system("cls");
