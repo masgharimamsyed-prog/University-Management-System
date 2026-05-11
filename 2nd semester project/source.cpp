@@ -534,7 +534,7 @@ void viewStudents() {
     else for (int i = 0; i < (int)STUDENTS.size(); i++) STUDENTS[i]->display();
     system("pause");
 }
-
+ 
 void addTeacher() {
     int    ID;
     string name, email;
