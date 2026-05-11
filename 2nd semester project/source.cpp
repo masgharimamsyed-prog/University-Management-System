@@ -328,6 +328,7 @@ static string trim(string s) {
 }
 
 
+
 void loadData() {
     loadDataforTeacher();
     loadDataforStudent();
