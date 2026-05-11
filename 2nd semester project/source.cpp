@@ -99,6 +99,7 @@ public:
         this->type = "exchange";
         this->GPA = GPA;
         fail = (GPA < 2);
+
     }
     friend void viewStudents();
     void display() {
@@ -151,7 +152,7 @@ protected:
     int code;
     string name;
 public:
-    course() {}
+ 
     virtual void assignCourse(teacher* obj) = 0;
     virtual void display() = 0;
     virtual void showitsStudents() = 0;
@@ -269,7 +270,6 @@ protected:
     course* ptrC;
     student* ptrS;
 public:
-    Assessment() {}
 };
 class finals : public Assessment {};
 class dailylabs : public Assessment {
