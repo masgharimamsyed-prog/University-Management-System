@@ -7,7 +7,6 @@
 #include<string>
 
 using namespace std;
-
 class academicEntity {
 protected:
     int ID;
@@ -16,7 +15,6 @@ public:
     string name;
     virtual void display() = 0;
 };
-
 class teacher : public academicEntity {
     vector<float> arrayofScore;
     float avgScore;
@@ -45,8 +43,8 @@ public:
     }
     friend void saveDataforTeacher();
     friend void loadDataforTeacher();
+    friend class section;
 };
-
 class student : public academicEntity {
 protected:
     float GPA;
@@ -57,7 +55,6 @@ public:
     friend void viewStudents();
     friend void saveDataforStudent();
 };
-
 class scholarshipStudent : public student {
 protected:
     bool probation;
@@ -87,7 +84,6 @@ public:
     }
     friend void saveDataforStudent();
 };
-
 class exchangeStudent : public student {
 protected:
     bool fail;
@@ -113,7 +109,6 @@ public:
     }
     friend void saveDataforStudent();
 };
-
 class regularStudent : public student {
 protected:
     bool feeStatus;
@@ -140,9 +135,7 @@ public:
     }
     friend void saveDataforStudent();
 };
-
 vector<student*> STUDENTS;
-
 class course {
 protected:
     int noofStudents = 0;
@@ -164,8 +157,8 @@ public:
     }
     friend void saveDataforCourse();
     friend void loadDataforCourse();
+    friend class section;
 };
-
 class core : public course {
 public:
     core(int code, string name, teacher* obj) {
@@ -198,7 +191,6 @@ public:
         }
     }
 };
-
 class elective : public course {
 public:
     elective(int code, string name, teacher* obj) {
@@ -231,7 +223,6 @@ public:
         }
     }
 };
-
 class lab : public course {
 public:
     lab(int code, string name, teacher* obj) {
@@ -264,7 +255,6 @@ public:
         }
     }
 };
-
 class Assessment {
 protected:
     course* ptrC;
@@ -278,7 +268,6 @@ public:
 };
 class quizzes : public Assessment {};
 class assignments : public Assessment {};
-
 class venue {
 protected:
     int id;
@@ -295,13 +284,34 @@ public:
             << ", Computer:" << (hascomp ? "Yes" : "No") << endl;
     }
    friend void saveDataforVenue();
+   friend class section;
 };
 
+class section {
+    int id;
+    course* Cobj;
+    teacher* Tobj;
+    venue* Vobj;
+public:
+    section(int id,course* Cobj,teacher *Tobj,venue* Vobj) {
+        this->id = id;
+        this->Cobj = Cobj;
+        this->Tobj = Tobj;
+        this->Vobj = Vobj;
+    }
+    void display() {
+        cout << "Section ID: " << id
+            << "\nCourse: " << (Cobj != nullptr ? Cobj->name : "No Course")
+            << "\nTeacher: " << (Tobj != nullptr ? Tobj->name : "No Teacher")
+            << "\nVenue: " << (Vobj != nullptr ? to_string(Vobj->id) : "No Venue")
+            << endl;
+    }
+};
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
 vector<venue*>   VENUES;
 vector<Assessment*> ASSESS;
-
+vector<section*> SECTION;
 
 void loadData();
 void addStudent();
@@ -324,14 +334,11 @@ void saveDataforTeacher();
 void saveDataforStudent();
 void saveDataforCourse();
 void saveDataforVenue();
-
 static string trim(string s) {
     while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' '))
         s.pop_back();
     return s;
 }
-
-
 
 void loadData() {
     loadDataforTeacher();
@@ -487,8 +494,6 @@ void loadDataforVenue() {
 
     }
 }
-
-
 void saveData() {
     saveDataforTeacher();
     saveDataforStudent();
