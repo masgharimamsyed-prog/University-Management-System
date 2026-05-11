@@ -339,7 +339,7 @@ void loadDataforTeacher() {
     TEACHERS.clear();
     ifstream file("Teachers.txt");
     if (!file.is_open()) return;
-
+     
     string tempID, name, email, tempscore;
     while (getline(file, tempID, ',')) {
         tempID = trim(tempID);
