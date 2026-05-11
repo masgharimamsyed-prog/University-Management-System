@@ -37,7 +37,7 @@ public:
     void display() {
         cout << "ID:" << ID << ", Name:" << name << ", Email:" << email << ", Avg Score:" << avgScore << endl;
     }
-    void giveFeedback(int i) {
+    void giveFeedback(float i) {
         arrayofScore.push_back(i);
         float sum = 0;
         for (int j = 0; j < (int)arrayofScore.size(); j++) {
@@ -57,7 +57,7 @@ public:
 };
 class student : public academicEntity {
 protected:
-    float GPA;
+    float GPA=0.0;
     string type;
     vector <Assessment*> assess;
 public:
@@ -156,9 +156,9 @@ protected:
     int noofStudents = 0;
     vector<student*> itsStudents;
     string type;
-    teacher* obj;
+    teacher* obj = nullptr;
 public:
-    int code;
+    int code=0;
     string name;
     virtual void assignCourse(teacher* obj) = 0;
     virtual void display() = 0;
@@ -278,10 +278,10 @@ public:
 };
 class Assessment {
 protected:
-    course* Cobj;
+    course* Cobj = nullptr;
     string type;
-    float totalMarks;
-    float obtainMarks;
+    float totalMarks=0;
+    float obtainMarks=0;
 public:
     virtual void display() = 0;
     friend void addAssessment();
@@ -487,6 +487,7 @@ void loadDataforStudent() {
          
             STUDENTS.push_back(new regularStudent(id, name, email, GPA, extra));
         }
+
     }
 }
 void loadDataforCourse() {
@@ -550,6 +551,7 @@ void loadDataforCourse() {
                 c->AddingStudenttoCourse(enrolled[k]);
         }
     }
+   
 }
 void loadDataforVenue() {
     VENUES.clear();
@@ -583,9 +585,11 @@ void loadDataforVenue() {
 
 
     }
+   
+    
 }
 void loadDataforSection() {
-    STUDENTS.clear();
+    SECTIONS.clear();
     ifstream file("Sections.txt");
     if (!file.is_open()) return;
     int id;
@@ -637,6 +641,8 @@ void loadDataforSection() {
 
 
     }
+   
+ 
 }
 void loadDataforAssessment() {
 
@@ -706,6 +712,7 @@ void loadDataforAssessment() {
             ASSESS.push_back(A);
         }
     }
+  
 }
 
 void saveData() {
@@ -812,8 +819,11 @@ void addStudent() {
     else { STUDENTS.push_back(new exchangeStudent(ID, name, email, GPA));   cout << "\nExchange Student Added!\n"; }
 }
 void viewStudents() {
-    if (STUDENTS.empty()) { cout << "No students found.\n"; }
-    else for (int i = 0; i < (int)STUDENTS.size(); i++) STUDENTS[i]->display();
+    if (STUDENTS.size() == 0) {
+        cout << "no student" << endl;
+    }
+    for (int i = 0; i < (int)STUDENTS.size(); i++)
+        STUDENTS[i]->display();
     system("pause");
 }
 void addTeacher() {
@@ -991,9 +1001,9 @@ void addSections() {
     //teacher
     while (found) {
         cout << "Enter the id of teacher new section:" << endl;
-        cin >> id;
+        cin >> tid;
         for (int i = 0; i < TEACHERS.size(); i++) {
-            if (TEACHERS[i]->ID == id) {
+            if (TEACHERS[i]->ID == tid) {
                 Tobj = TEACHERS[i];
                 found = false;
                 break;
@@ -1007,9 +1017,9 @@ void addSections() {
     //course
     while (found) {
         cout << "Enter the id of course new section:" << endl;
-        cin >> id;
+        cin >> cid;
         for (int i = 0; i <COURSES.size(); i++) {
-            if (COURSES[i]->code == id) {
+            if (COURSES[i]->code == cid) {
                 Cobj = COURSES[i];
                 found = false;
                 break;
@@ -1023,9 +1033,9 @@ void addSections() {
     found = true;
     while (found) {
         cout << "Enter the id of venue of new section:" << endl;
-        cin >> id;
+        cin >> vid;
         for (int i = 0; i <VENUES.size(); i++) {
-            if (VENUES[i]->id == id) {
+            if (VENUES[i]->id == vid) {
                 Vobj = VENUES[i];
                 found = false;
                 break;

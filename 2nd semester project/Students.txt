@@ -1,3 +1,8 @@
-1,asghar,asghar@gamil.com,3.4,scholarship,0
-2,hassan,ali,3,regular,1
-3,aziz,aziz@gamail.com,4,exchange,0
+101,Ali,ali@gmail.com,3.5,scholarship,0
+102,Ayesha,ayesha@gmail.com,2.9,scholarship,1
+103,Usman,usman@gmail.com,3.2,regular,1
+104,Sara,sara@gmail.com,1.9,exchange,1
+105,Hassan,hassan@gmail.com,3.8,regular,0
+106,Zainab,zainab@gmail.com,2.4,exchange,0
+107,Ahmed,ahmed@gmail.com,3.6,scholarship,0
+108,Hina,hina@gmail.com,3.1,regular,1

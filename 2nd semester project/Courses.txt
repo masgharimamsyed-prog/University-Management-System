@@ -1,3 +1,2 @@
 301,OOP,core,Ali Hassan,0
-302,Calculus,elective,Sara Khan,0
 303,Physics Lab,lab,Usman Tariq,0
