@@ -435,8 +435,9 @@ void loadDataforCourse() {
                 }
             }
         }
-        if (no == 0) {
-            string dummy; getline(file, dummy);
+        if (no == 0) {//
+            string dummy;
+            getline(file, dummy);
         }
 
         course* c = nullptr;
