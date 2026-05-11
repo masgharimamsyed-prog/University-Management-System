@@ -744,7 +744,7 @@ int main() {
         cout << "4.  View Teachers\n";
         cout << "5.  Add Course\n";
         cout << "6.  View Courses\n";
-        cout << "7.  Register Student in Course\n";
+        cout << "7.  Register Student in Course\n"; 
         cout << "8.  Create Section\n";
         cout << "9.  Assign Course to Teacher\n";
         cout << "10. Add venue\n";
