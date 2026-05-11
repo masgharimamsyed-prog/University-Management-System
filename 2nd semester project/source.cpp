@@ -44,6 +44,9 @@ public:
     friend void saveDataforTeacher();
     friend void loadDataforTeacher();
     friend class section;
+   friend void addSections();
+   friend void loadDataforSection();
+   friend void saveDataforSection();
 };
 class student : public academicEntity {
 protected:
@@ -145,7 +148,7 @@ protected:
     int code;
     string name;
 public:
- 
+     
     virtual void assignCourse(teacher* obj) = 0;
     virtual void display() = 0;
     virtual void showitsStudents() = 0;
@@ -158,6 +161,9 @@ public:
     friend void saveDataforCourse();
     friend void loadDataforCourse();
     friend class section;
+   friend void addSections();
+  friend void loadDataforSection();
+  friend void saveDataforSection();
 };
 class core : public course {
 public:
@@ -285,6 +291,9 @@ public:
     }
    friend void saveDataforVenue();
    friend class section;
+   friend void addSections();
+   friend void loadDataforSection();
+   friend void saveDataforSection();
 };
 
 class section {
@@ -306,12 +315,13 @@ public:
             << "\nVenue: " << (Vobj != nullptr ? to_string(Vobj->id) : "No Venue")
             << endl;
     }
+    friend void saveDataforSection();
 };
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
 vector<venue*>   VENUES;
 vector<Assessment*> ASSESS;
-vector<section*> SECTION;
+vector<section*> SECTIONS;
 
 void loadData();
 void addStudent();
@@ -321,19 +331,25 @@ void viewTeachers();
 void addCourse();
 void viewCourses();
 void registerStudentInCourse();
-void createSection();
 void assignCourseToTeacher();
 void addVenue();
 void showAllVenues();
 void saveData();
+void showAllSections();
+void addSections();
+
 void loadDataforTeacher();
 void loadDataforStudent();
 void loadDataforCourse();
 void loadDataforVenue();
+void loadDataforSection();
+
 void saveDataforTeacher();
 void saveDataforStudent();
 void saveDataforCourse();
 void saveDataforVenue();
+void saveDataforSection();
+
 static string trim(string s) {
     while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' '))
         s.pop_back();
@@ -345,6 +361,8 @@ void loadData() {
     loadDataforStudent();
     loadDataforCourse();
     loadDataforVenue();
+    loadDataforSection();
+
 }
 void loadDataforTeacher() {
     TEACHERS.clear();
@@ -494,11 +512,66 @@ void loadDataforVenue() {
 
     }
 }
+void loadDataforSection() {
+    STUDENTS.clear();
+    ifstream file("Sections.txt");
+    if (!file.is_open()) return;
+    int id;
+    int cid;
+    int tid;
+    int vid;
+    string sectionid,courseid, teacherid, venueid;
+    course* Cobj = NULL;
+    teacher* Tobj=NULL;
+    venue* Vobj = NULL;
+
+    while (getline(file,sectionid,',')) {
+        sectionid = trim(sectionid);
+
+        if (sectionid.empty()) continue;
+        id = stoi(sectionid);
+        //course
+        getline(file, courseid, ',');
+        courseid = trim(courseid);
+        if (courseid.empty()) continue;
+        cid = stoi(courseid);
+        for (int i = 0; i < COURSES.size(); i++) {
+            if (COURSES[i]->code==cid) {
+                Cobj = COURSES[i];
+            }
+        }
+        //teacher
+        getline(file, teacherid, ',');
+        teacherid = trim(teacherid);
+        if (teacherid.empty()) continue;
+        tid = stoi(teacherid);
+        for (int i = 0; i < TEACHERS.size(); i++) {
+            if (TEACHERS[i]->ID == tid) {
+                Tobj = TEACHERS[i];
+            }
+        }
+        //venue
+        getline(file, venueid, ',');
+        venueid = trim(venueid);
+        if (venueid.empty()) continue;
+        vid = stoi(venueid);
+        for (int i = 0; i < VENUES.size(); i++) {
+            if (VENUES[i]->id == vid) {
+                Vobj = VENUES[i];
+            }
+        }
+
+        SECTIONS.push_back(new section(id, Cobj, Tobj, Vobj));
+
+
+    }
+}
 void saveData() {
     saveDataforTeacher();
     saveDataforStudent();
     saveDataforCourse();
     saveDataforVenue();
+    saveDataforSection();
 }
 void saveDataforTeacher() {
     ofstream file("Teachers.txt", ios::out | ios::trunc);
@@ -543,6 +616,12 @@ void saveDataforVenue() {
     ofstream file("Venues.txt", ios::out | ios::trunc);
     for (int i = 0; i < (int)VENUES.size(); i++) {
         file << VENUES[i]->id << "," <<VENUES[i]->capacity<< "," << VENUES[i]->hascomp << "," << endl;
+    }
+}
+void saveDataforSection() {
+    ofstream file("Sections.txt", ios::trunc);
+    for (int i = 0; i < SECTIONS.size(); i++) {
+        file << SECTIONS[i]->id << ","<< (*(SECTIONS[i]->Cobj)).code<<"," << (*(SECTIONS[i]->Tobj)).ID << "," << (*(SECTIONS[i]->Vobj)).id << "," << endl;
     }
 }
 
@@ -669,10 +748,6 @@ void registerStudentInCourse() {
     if (!found) cout << "Course not found!\n";
     else        cout << "Student registered successfully!\n";
 }
-void createSection() {
-    cout << "Section creation not yet implemented.\n";
-    system("pause");
-}
 void assignCourseToTeacher() {
     if (TEACHERS.empty()) { cout << "No teachers available.\n"; return; }
     if (COURSES.empty()) { cout << "No courses available.\n";  return; }
@@ -727,13 +802,84 @@ void addVenue() {
 
 
 }
-void showAllVenue() {
+void showAllVenues() {
     cout << "Venues:" << endl;
     for (int i = 0; i < VENUES.size(); i++) {
         VENUES[i]->display();
     }
     system("pause");
 }
+void showAllSections() {
+    for (int i = 0; i < SECTIONS.size(); i++) {
+        SECTIONS[i]->display();
+    }
+    system("pause");
+}
+void addSections() {
+    int id;
+    course* Cobj=nullptr;
+    teacher* Tobj=nullptr;
+    venue* Vobj=nullptr;
+    int tid;
+    int cid;
+    int vid;
+    
+    cout << "enter the id od new section" <<endl;
+    cin >> id;
+  
+    bool found =true;
+    //teacher
+    while (found) {
+        cout << "Enter the id of teacher new section:" << endl;
+        cin >> id;
+        for (int i = 0; i < TEACHERS.size(); i++) {
+            if (TEACHERS[i]->ID == id) {
+                Tobj = TEACHERS[i];
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            cout << "No id exist for that,enter again" << endl;
+        }
+    }
+    found = true;
+    //course
+    while (found) {
+        cout << "Enter the id of course new section:" << endl;
+        cin >> id;
+        for (int i = 0; i <COURSES.size(); i++) {
+            if (COURSES[i]->code == id) {
+                Cobj = COURSES[i];
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            cout << "No id exist for that,enter again" << endl;
+        }
+    }
+    //venue
+    found = true;
+    while (found) {
+        cout << "Enter the id of new section:" << endl;
+        cin >> id;
+        for (int i = 0; i <VENUES.size(); i++) {
+            if (VENUES[i]->id == id) {
+                Vobj = VENUES[i];
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            cout << "No id exist for that,enter again" << endl;
+        }
+    }
+
+    SECTIONS.push_back(new section(id, Cobj, Tobj, Vobj));
+
+}
+
 
 int main() {
     loadData();
@@ -750,11 +896,12 @@ int main() {
         cout << "5.  Add Course\n";
         cout << "6.  View Courses\n";
         cout << "7.  Register Student in Course\n"; 
-        cout << "8.  Create Section\n";
         cout << "9.  Assign Course to Teacher\n";
         cout << "10. Add venue\n";
-        cout << "11.show venue\n";
-        cout << "12.Exit\n";
+        cout << "11. show venue\n";
+        cout << "12. show All Sections\n";
+        cout << "13. add Section\n";
+        cout << "14. Exit\n";
         cout << "Enter Choice: ";
         cin >> c;
 
@@ -766,11 +913,12 @@ int main() {
         case 5:  addCourse();              break;
         case 6:  viewCourses();            break;
         case 7:  registerStudentInCourse(); break;
-        case 8:  createSection();          break;
         case 9:  assignCourseToTeacher();  break;
         case 10: addVenue;                 break;
         case 11:showAllVenues();           break;
-        case 12:
+        case 12:showAllSections();          break;
+        case 13:addSections();          break;
+        case 14:
             saveData();
             cout << "\nData saved. Program closed.\n";
             return 0;
