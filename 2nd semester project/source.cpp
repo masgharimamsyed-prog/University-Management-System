@@ -5,16 +5,23 @@
 #include<fstream>
 #include<cstring>
 #include<string>
+class Assessment;
+class student;
+class teacher;
+class course;
+class venue;
+class section;
 
 using namespace std;
 class academicEntity {
 protected:
-    int ID;
+    int ID=0;
     string email;
 public:
     string name;
     virtual void display() = 0;
-};
+}; 
+
 class teacher : public academicEntity {
     vector<float> arrayofScore;
     float avgScore;
@@ -52,11 +59,16 @@ class student : public academicEntity {
 protected:
     float GPA;
     string type;
+    vector <Assessment*> assess;
 public:
+   friend void saveDataforAssessment();
     virtual void display() = 0;
     virtual void setGPA(float GPA) = 0;
     friend void viewStudents();
     friend void saveDataforStudent();
+    friend void loadDataforAssessment();
+    friend void addAssessment();
+    friend void showAssessmentofStudent();
 };
 class scholarshipStudent : public student {
 protected:
@@ -145,10 +157,9 @@ protected:
     vector<student*> itsStudents;
     string type;
     teacher* obj;
+public:
     int code;
     string name;
-public:
-     
     virtual void assignCourse(teacher* obj) = 0;
     virtual void display() = 0;
     virtual void showitsStudents() = 0;
@@ -164,6 +175,7 @@ public:
    friend void addSections();
   friend void loadDataforSection();
   friend void saveDataforSection();
+  
 };
 class core : public course {
 public:
@@ -196,6 +208,7 @@ public:
             cout << "No more seats in this course." << endl;
         }
     }
+    friend void saveDataforAssessment();
 };
 class elective : public course {
 public:
@@ -228,6 +241,7 @@ public:
             cout << "No more seats in this course." << endl;
         }
     }
+    friend void saveDataforAssessment();
 };
 class lab : public course {
 public:
@@ -260,20 +274,68 @@ public:
             cout << "No more seats in this course." << endl;
         }
     }
+    friend void saveDataforAssessment();
 };
 class Assessment {
 protected:
-    course* ptrC;
-    student* ptrS;
+    course* Cobj;
+    string type;
+    float totalMarks;
+    float obtainMarks;
 public:
+    virtual void display() = 0;
+    friend void addAssessment();
+    friend void saveDataforAssessment();
+    friend void showAssessmentofStudent();
 };
-class finals : public Assessment {};
-class dailylabs : public Assessment {
+class finals : public Assessment {
 public:
-    void setmarks() {}
+    finals(course* Cobj, float totalMarks, float obtainMarks) {
+        this->Cobj = Cobj;
+        this->totalMarks = totalMarks;
+        this->obtainMarks = obtainMarks;
+        this->type = "finals";
+    }
+
+    void display() {
+        cout << "courseid:" << Cobj->name
+            << ",type:" << type
+            << ",total:" << totalMarks
+            << ",obtain:" << obtainMarks << endl;
+    }
 };
-class quizzes : public Assessment {};
-class assignments : public Assessment {};
+class quizzes : public Assessment {
+public:
+    quizzes(course* Cobj, float totalMarks, float obtainMarks) {
+        this->Cobj = Cobj;
+        this->totalMarks = totalMarks;
+        this->obtainMarks = obtainMarks;
+        this->type = "quiz";
+    }
+
+    void display() {
+        cout << "courseid:" << Cobj->name
+            << ",type:" << type
+            << ",total:" << totalMarks
+            << ",obtain:" << obtainMarks << endl;
+    }
+};
+class assignments : public Assessment {
+public:
+    assignments(course* Cobj, float totalMarks, float obtainMarks) {
+        this->Cobj = Cobj;
+        this->totalMarks = totalMarks;
+        this->obtainMarks = obtainMarks;
+        this->type = "assignment";
+    }
+
+    void display() {
+        cout << "courseid:" << Cobj->name
+            << ",type:" << type
+            << ",total:" << totalMarks
+            << ",obtain:" << obtainMarks << endl;
+    }
+};
 class venue {
 protected:
     int id;
@@ -337,18 +399,22 @@ void showAllVenues();
 void saveData();
 void showAllSections();
 void addSections();
+void addAssessment();
+void showAssessmentofStudent();
 
 void loadDataforTeacher();
 void loadDataforStudent();
 void loadDataforCourse();
 void loadDataforVenue();
 void loadDataforSection();
+void loadDataforAssessment();
 
 void saveDataforTeacher();
 void saveDataforStudent();
 void saveDataforCourse();
 void saveDataforVenue();
 void saveDataforSection();
+void saveDataforAssessment();
 
 static string trim(string s) {
     while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' '))
@@ -362,7 +428,7 @@ void loadData() {
     loadDataforCourse();
     loadDataforVenue();
     loadDataforSection();
-
+    loadDataforAssessment();
 }
 void loadDataforTeacher() {
     TEACHERS.clear();
@@ -390,12 +456,12 @@ void loadDataforStudent() {
     STUDENTS.clear();
     ifstream file("Students.txt");
     if (!file.is_open()) return;
-
+    
     string tempID, name, email, tempscore, type, extratemp;
     while (getline(file, tempID, ',')) {
         tempID = trim(tempID);//
         if (tempID.empty()) continue;
-
+      
         getline(file, name, ',');
         getline(file, email, ',');
         getline(file, tempscore, ',');
@@ -406,15 +472,21 @@ void loadDataforStudent() {
             extratemp.pop_back();//
 
         int   id = stoi(tempID);
+       
         float GPA = stof(tempscore);
         bool  extra = (extratemp == "1" || extratemp == "true");
 
-        if (type == "scholarship")
+        if (type == "scholarship") {
             STUDENTS.push_back(new scholarshipStudent(id, name, email, GPA, extra));
-        else if (type == "exchange")
+        }
+        else if (type == "exchange") {
+           
             STUDENTS.push_back(new exchangeStudent(id, name, email, GPA, extra));
-        else if (type == "regular")
+        }
+        else if (type == "regular") {
+         
             STUDENTS.push_back(new regularStudent(id, name, email, GPA, extra));
+        }
     }
 }
 void loadDataforCourse() {
@@ -566,12 +638,83 @@ void loadDataforSection() {
 
     }
 }
+void loadDataforAssessment() {
+
+    ASSESS.clear();
+
+    ifstream file("Assessments.txt");
+
+    if (!file.is_open()) return;
+
+    string studentid;
+    string courseid;
+    string type;
+    string total;
+    string obtain;
+
+    while (getline(file, studentid, ',')) {
+
+        getline(file, courseid, ',');
+        getline(file, type, ',');
+        getline(file, total, ',');
+        getline(file, obtain);
+
+        int sid = stoi(studentid);
+        int cid = stoi(courseid);
+
+        float t = stof(total);
+        float o = stof(obtain);
+
+        student* Sobj = nullptr;
+        course* Cobj = nullptr;
+
+        for (int i = 0; i < STUDENTS.size(); i++) {
+
+            if (STUDENTS[i]->ID == sid) {
+                Sobj = STUDENTS[i];
+                break;
+            }
+        }
+
+        for (int i = 0; i < COURSES.size(); i++) {
+
+            if (COURSES[i]->code == cid) {
+                Cobj = COURSES[i];
+                break;
+            }
+        }
+
+        if (Sobj == nullptr || Cobj == nullptr) {
+            continue;
+        }
+
+        Assessment* A = nullptr;
+
+        if (type == "finals") {
+            A = new finals(Cobj, t, o);
+        }
+        else if (type == "quiz") {
+            A = new quizzes(Cobj, t, o);
+        }
+        else if (type == "assignment") {
+            A = new assignments(Cobj, t, o);
+        }
+
+        if (A != nullptr) {
+
+            Sobj->assess.push_back(A);
+            ASSESS.push_back(A);
+        }
+    }
+}
+
 void saveData() {
     saveDataforTeacher();
     saveDataforStudent();
     saveDataforCourse();
     saveDataforVenue();
     saveDataforSection();
+    saveDataforAssessment();
 }
 void saveDataforTeacher() {
     ofstream file("Teachers.txt", ios::out | ios::trunc);
@@ -624,7 +767,24 @@ void saveDataforSection() {
         file << SECTIONS[i]->id << ","<< (*(SECTIONS[i]->Cobj)).code<<"," << (*(SECTIONS[i]->Tobj)).ID << "," << (*(SECTIONS[i]->Vobj)).id << "," << endl;
     }
 }
+void saveDataforAssessment() {
 
+    ofstream file("Assessments.txt", ios::out | ios::trunc);
+
+    for (int i = 0; i < STUDENTS.size(); i++) {
+
+        for (int j = 0; j < STUDENTS[i]->assess.size(); j++) {
+
+            Assessment* A = STUDENTS[i]->assess[j];
+
+            file << STUDENTS[i]->ID << ","
+                << A->Cobj->code << ","
+                << A->type << ","
+                << A->totalMarks << ","
+                << A->obtainMarks << "\n";
+        }
+    }
+}
 
 void addStudent() {
     int    ID, type;
@@ -788,7 +948,7 @@ void addVenue() {
     int capacity;
     cout << "Enter the capacity of venue:" << endl;
     cin >> capacity;
-    bool hascomp;
+    bool hascomp=true;
     int choice;
     cout << "Enter computer capacity or not?(1 for has computers,0 for no computers):" << endl;
     cin >> choice;
@@ -862,7 +1022,7 @@ void addSections() {
     //venue
     found = true;
     while (found) {
-        cout << "Enter the id of new section:" << endl;
+        cout << "Enter the id of venue of new section:" << endl;
         cin >> id;
         for (int i = 0; i <VENUES.size(); i++) {
             if (VENUES[i]->id == id) {
@@ -878,6 +1038,123 @@ void addSections() {
 
     SECTIONS.push_back(new section(id, Cobj, Tobj, Vobj));
 
+}
+void addAssessment() {
+
+    int sid;
+    int cid;
+    int choice;
+
+    float total;
+    float obtain;
+
+    student* Sobj = nullptr;
+    course* Cobj = nullptr;
+
+    cout << "Enter Student ID: ";
+    cin >> sid;
+
+    for (int i = 0; i < STUDENTS.size(); i++) {
+
+        if (STUDENTS[i]->ID == sid) {
+
+            Sobj = STUDENTS[i];
+            break;
+        }
+    }
+
+    if (Sobj == nullptr) {
+
+        cout << "Student not found\n";
+        return;
+    }
+
+    cout << "Enter Course Code: ";
+    cin >> cid;
+
+    for (int i = 0; i < COURSES.size(); i++) {
+
+        if (COURSES[i]->code == cid) {
+
+            Cobj = COURSES[i];
+            break;
+        }
+    }
+
+    if (Cobj == nullptr) {
+
+        cout << "Course not found\n";
+        return;
+    }
+
+    cout << "1. Finals\n";
+    cout << "2. Quiz\n";
+    cout << "3. Assignment\n";
+    cout << "Enter choice: ";
+    cin >> choice;
+
+    cout << "Enter total marks: ";
+    cin >> total;
+
+    cout << "Enter obtained marks: ";
+    cin >> obtain;
+
+    Assessment* A = nullptr;
+
+    if (choice == 1) {
+
+        A = new finals(Cobj, total, obtain);
+    }
+    else if (choice == 2) {
+
+        A = new quizzes(Cobj, total, obtain);
+    }
+    else if (choice == 3) {
+
+        A = new assignments(Cobj, total, obtain);
+    }
+
+    if (A != nullptr) {
+
+        Sobj->assess.push_back(A);
+
+        ASSESS.push_back(A);
+
+        cout << "Assessment added successfully\n";
+    }
+}
+void showAssessmentofStudent() {
+
+    int sid;
+
+    cout << "Enter Student ID: ";
+    cin >> sid;
+
+    student* Sobj = nullptr;
+
+    for (int i = 0; i < STUDENTS.size(); i++) {
+
+        if (STUDENTS[i]->ID == sid) {
+
+            Sobj = STUDENTS[i];
+            break;
+        }
+    }
+
+    if (Sobj == nullptr) {
+
+        cout << "Student not found\n";
+        return;
+    }
+
+    cout << "\nAssessments of " << Sobj->name << ":\n";
+
+    for (int i = 0; i < Sobj->assess.size(); i++) {
+
+        Sobj->assess[i]->display();
+    }
+
+    system("pause");
 }
 
 
@@ -896,12 +1173,14 @@ int main() {
         cout << "5.  Add Course\n";
         cout << "6.  View Courses\n";
         cout << "7.  Register Student in Course\n"; 
-        cout << "9.  Assign Course to Teacher\n";
-        cout << "10. Add venue\n";
-        cout << "11. show venue\n";
-        cout << "12. show All Sections\n";
-        cout << "13. add Section\n";
-        cout << "14. Exit\n";
+        cout << "8.  Assign Course to Teacher\n";
+        cout << "9.  Add venue\n";
+        cout << "10. show venue\n";
+        cout << "11. show All Sections\n";
+        cout << "12. add Section\n";
+        cout << "13. add assessment\n";
+        cout << "14. show all assements\n";
+        cout << "15. Exit\n";
         cout << "Enter Choice: ";
         cin >> c;
 
@@ -913,12 +1192,14 @@ int main() {
         case 5:  addCourse();              break;
         case 6:  viewCourses();            break;
         case 7:  registerStudentInCourse(); break;
-        case 9:  assignCourseToTeacher();  break;
-        case 10: addVenue;                 break;
-        case 11:showAllVenues();           break;
-        case 12:showAllSections();          break;
-        case 13:addSections();          break;
-        case 14:
+        case 8:  assignCourseToTeacher();  break;
+        case 9:  addVenue;                 break;
+        case 10: showAllVenues();           break;
+        case 11: showAllSections();          break;
+        case 12: addSections();          break;
+        case 13: addAssessment();          break;  
+        case 14: showAssessmentofStudent();          break;
+        case 15:
             saveData();
             cout << "\nData saved. Program closed.\n";
             return 0;
@@ -929,3 +1210,4 @@ int main() {
     }
     return 0;
 }
+
