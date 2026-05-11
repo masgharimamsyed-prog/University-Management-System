@@ -281,19 +281,20 @@ class assignments : public Assessment {};
 
 class venue {
 protected:
-    int roomno;
+    int id;
     int capacity;
-    bool computer;
+    bool hascomp;
 public:
     venue(int roomno = 0, int capacity = 0, bool computer = 0) {
-        this->roomno = roomno;
+        this->id = roomno;
         this->capacity = capacity;
-        this->computer = computer;
+        this->hascomp = computer;
     }
     void display() {
-        cout << "Room No:" << roomno << ", Capacity:" << capacity
-            << ", Computer:" << (computer ? "Yes" : "No") << endl;
+        cout << "Room No:" << id << ", Capacity:" << capacity
+            << ", Computer:" << (hascomp ? "Yes" : "No") << endl;
     }
+   friend void saveDataforVenue();
 };
 
 vector<teacher*> TEACHERS;
@@ -312,14 +313,17 @@ void viewCourses();
 void registerStudentInCourse();
 void createSection();
 void assignCourseToTeacher();
+void addVenue();
+void showAllVenues();
 void saveData();
 void loadDataforTeacher();
 void loadDataforStudent();
 void loadDataforCourse();
+void loadDataforVenue();
 void saveDataforTeacher();
 void saveDataforStudent();
 void saveDataforCourse();
-
+void saveDataforVenue();
 
 static string trim(string s) {
     while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' '))
@@ -333,8 +337,8 @@ void loadData() {
     loadDataforTeacher();
     loadDataforStudent();
     loadDataforCourse();
+    loadDataforVenue();
 }
-
 void loadDataforTeacher() {
     TEACHERS.clear();
     ifstream file("Teachers.txt");
@@ -357,7 +361,6 @@ void loadDataforTeacher() {
         TEACHERS.push_back(new teacher(id, name, email, avgScore));
     }
 }
-
 void loadDataforStudent() {
     STUDENTS.clear();
     ifstream file("Students.txt");
@@ -389,7 +392,6 @@ void loadDataforStudent() {
             STUDENTS.push_back(new regularStudent(id, name, email, GPA, extra));
     }
 }
-
 void loadDataforCourse() {
     COURSES.clear();
     ifstream file("Courses.txt");
@@ -452,14 +454,47 @@ void loadDataforCourse() {
         }
     }
 }
+void loadDataforVenue() {
+    VENUES.clear();
+    int id, capacity;
+    bool hascomp;
+    ifstream file("Venues.txt");
+    if (!file.is_open()) return;
+    string tempid, tempcapacity, temphascomp;
+    while (getline(file,tempid,',') ){
+        //id
+        tempid = trim(tempid);
+        if (tempid.empty()) continue;
+        id = stoi(tempid);
+        //cacpity
+        getline(file, tempcapacity, ',');
+        tempcapacity = trim(tempcapacity);
+        if (tempid.empty()) continue;
+        capacity = stoi(tempcapacity);
+        //hascomp
+        getline(file, temphascomp, ',');
+        temphascomp = trim(temphascomp);
+        if (temphascomp == "true" || temphascomp == "1") {
+            hascomp = true;
+        }
+        else {
+            hascomp = false;
+        }
+        
+        //laodig 
+        VENUES.push_back(new venue(id, capacity, hascomp));
+
+
+    }
+}
 
 
 void saveData() {
     saveDataforTeacher();
     saveDataforStudent();
     saveDataforCourse();
+    saveDataforVenue();
 }
-
 void saveDataforTeacher() {
     ofstream file("Teachers.txt", ios::out | ios::trunc);
     for (int i = 0; i < (int)TEACHERS.size(); i++) {
@@ -467,7 +502,6 @@ void saveDataforTeacher() {
         file << t->ID << "," << t->name << "," << t->email << "," << t->avgScore << "\n";
     }
 }
-
 void saveDataforStudent() {
     ofstream file("Students.txt", ios::out | ios::trunc);
     for (int i = 0; i < (int)STUDENTS.size(); i++) {
@@ -488,7 +522,6 @@ void saveDataforStudent() {
         }
     }
 }
-
 void saveDataforCourse() {
     ofstream file("Courses.txt", ios::out | ios::trunc);
     for (int i = 0; i < (int)COURSES.size(); i++) {
@@ -499,6 +532,12 @@ void saveDataforCourse() {
         for (int j = 0; j < (int)COURSES[i]->itsStudents.size(); j++)
             file << "," << COURSES[i]->itsStudents[j]->name;
         file << "\n";
+    }
+}
+void saveDataforVenue() {
+    ofstream file("Venues.txt", ios::out | ios::trunc);
+    for (int i = 0; i < (int)VENUES.size(); i++) {
+        file << VENUES[i]->id << "," <<VENUES[i]->capacity<< "," << VENUES[i]->hascomp << "," << endl;
     }
 }
 
@@ -528,13 +567,11 @@ void addStudent() {
     else if (type == 2) { STUDENTS.push_back(new scholarshipStudent(ID, name, email, GPA)); cout << "\nScholarship Student Added!\n"; }
     else { STUDENTS.push_back(new exchangeStudent(ID, name, email, GPA));   cout << "\nExchange Student Added!\n"; }
 }
-
 void viewStudents() {
     if (STUDENTS.empty()) { cout << "No students found.\n"; }
     else for (int i = 0; i < (int)STUDENTS.size(); i++) STUDENTS[i]->display();
     system("pause");
 }
- 
 void addTeacher() {
     int    ID;
     string name, email;
@@ -544,13 +581,11 @@ void addTeacher() {
     TEACHERS.push_back(new teacher(ID, name, email));
     cout << "\nTeacher Added!\n";
 }
-
 void viewTeachers() {
     if (TEACHERS.empty()) { cout << "No teachers found.\n"; }
     else for (int i = 0; i < (int)TEACHERS.size(); i++) TEACHERS[i]->display();
     system("pause");
 }
-
 void addCourse() {
     int    code, type;
     string name;
@@ -581,7 +616,6 @@ void addCourse() {
     else                COURSES.push_back(new lab(code, name, obj));
     cout << "\nCourse Added!\n";
 }
-
 void viewCourses() {
     if (COURSES.empty()) { cout << "No courses found.\n"; system("pause"); return; }
     for (int i = 0; i < (int)COURSES.size(); i++) COURSES[i]->display();
@@ -597,12 +631,11 @@ void viewCourses() {
         }
     system("pause");
 }
-
 void registerStudentInCourse() {
     if (STUDENTS.empty()) { cout << "No students available.\n"; return; }
     if (COURSES.empty()) { cout << "No courses available.\n";  return; }
 
-    cout << "--- Students ---\n";
+    cout << "Students:\n";
     for (int i = 0; i < (int)STUDENTS.size(); i++) STUDENTS[i]->display();
 
     string t_name;
@@ -614,7 +647,7 @@ void registerStudentInCourse() {
     }
     if (!t_obj) { cout << "Student not found!\n"; return; }
 
-    cout << "--- Courses ---\n";
+    cout << "Courses:\n";
     for (int i = 0; i < (int)COURSES.size(); i++) COURSES[i]->display();
 
     int C_code;
@@ -631,17 +664,15 @@ void registerStudentInCourse() {
     if (!found) cout << "Course not found!\n";
     else        cout << "Student registered successfully!\n";
 }
-
 void createSection() {
     cout << "Section creation not yet implemented.\n";
     system("pause");
 }
-
 void assignCourseToTeacher() {
     if (TEACHERS.empty()) { cout << "No teachers available.\n"; return; }
     if (COURSES.empty()) { cout << "No courses available.\n";  return; }
 
-    cout << "--- Teachers ---\n";
+    cout << "Teachers:\n";
     for (int i = 0; i < (int)TEACHERS.size(); i++) TEACHERS[i]->display();
 
     string t_name;
@@ -653,7 +684,7 @@ void assignCourseToTeacher() {
     }
     if (!t_obj) { cout << "Teacher not found!\n"; return; }
 
-    cout << "--- Courses ---\n";
+    cout << "Courses:\n";
     for (int i = 0; i < (int)COURSES.size(); i++) COURSES[i]->display();
 
     int C_code;
@@ -670,7 +701,34 @@ void assignCourseToTeacher() {
     if (!found) cout << "Course not found!\n";
     else        cout << "Teacher assigned successfully!\n";
 }
+void addVenue() {
+    int id;
+    cout << "Enter the ID of venue:" << endl;
+    cin >> id;
+    int capacity;
+    cout << "Enter the capacity of venue:" << endl;
+    cin >> capacity;
+    bool hascomp;
+    int choice;
+    cout << "Enter computer capacity or not?(1 for has computers,0 for no computers):" << endl;
+    cin >> choice;
+    if (choice == 1) {
+        hascomp = true;
+    }
+    else if (choice == 0) {
+        hascomp = false;
+    }
+    VENUES.push_back(new venue(id, capacity, hascomp));
 
+
+}
+void showAllVenue() {
+    cout << "Venues:" << endl;
+    for (int i = 0; i < VENUES.size(); i++) {
+        VENUES[i]->display();
+    }
+    system("pause");
+}
 
 int main() {
     loadData();
@@ -689,7 +747,9 @@ int main() {
         cout << "7.  Register Student in Course\n";
         cout << "8.  Create Section\n";
         cout << "9.  Assign Course to Teacher\n";
-        cout << "10. Exit\n";
+        cout << "10. Add venue\n";
+        cout << "11.show venue\n";
+        cout << "12.Exit\n";
         cout << "Enter Choice: ";
         cin >> c;
 
@@ -703,7 +763,9 @@ int main() {
         case 7:  registerStudentInCourse(); break;
         case 8:  createSection();          break;
         case 9:  assignCourseToTeacher();  break;
-        case 10:
+        case 10: addVenue;                 break;
+        case 11:showAllVenues();           break;
+        case 12:
             saveData();
             cout << "\nData saved. Program closed.\n";
             return 0;
