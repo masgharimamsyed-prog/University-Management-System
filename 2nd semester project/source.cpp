@@ -342,14 +342,14 @@ void loadDataforTeacher() {
      
     string tempID, name, email, tempscore;
     while (getline(file, tempID, ',')) {
-        tempID = trim(tempID);
+        tempID = trim(tempID);//
         if (tempID.empty()) continue;
 
         getline(file, name, ',');
         getline(file, email, ',');
         getline(file, tempscore);
-        tempscore = trim(tempscore);
-        if (!tempscore.empty() && tempscore.back() == ',')
+        tempscore = trim(tempscore);//
+        if (!tempscore.empty() && tempscore.back() == ',')//
             tempscore.pop_back();
 
         int   id = stoi(tempID);
@@ -365,7 +365,7 @@ void loadDataforStudent() {
 
     string tempID, name, email, tempscore, type, extratemp;
     while (getline(file, tempID, ',')) {
-        tempID = trim(tempID);
+        tempID = trim(tempID);//
         if (tempID.empty()) continue;
 
         getline(file, name, ',');
@@ -373,9 +373,9 @@ void loadDataforStudent() {
         getline(file, tempscore, ',');
         getline(file, type, ',');
         getline(file, extratemp);
-        extratemp = trim(extratemp);
+        extratemp = trim(extratemp);//
         if (!extratemp.empty() && extratemp.back() == ',')
-            extratemp.pop_back();
+            extratemp.pop_back();//
 
         int   id = stoi(tempID);
         float GPA = stof(tempscore);
@@ -426,7 +426,7 @@ void loadDataforCourse() {
                 getline(file, studentname);
                 studentname = trim(studentname);
                 if (!studentname.empty() && studentname.back() == ',')
-                    studentname.pop_back();
+                    studentname.pop_back();//
             }
             for (int j = 0; j < (int)STUDENTS.size(); j++) {
                 if (STUDENTS[j]->name == studentname) {
