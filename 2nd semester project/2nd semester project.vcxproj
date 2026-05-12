@@ -127,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="assessment.cpp" />
     <ClCompile Include="course.cpp" />
+    <ClCompile Include="section.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="student.cpp" />
     <ClCompile Include="teacher.cpp" />
@@ -135,7 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="academicEntity.h" />
+    <ClInclude Include="assessment.h" />
     <ClInclude Include="course.h" />
+    <ClInclude Include="section.h" />
     <ClInclude Include="student.h" />
     <ClInclude Include="teacher.h" />
     <ClInclude Include="venue.h" />

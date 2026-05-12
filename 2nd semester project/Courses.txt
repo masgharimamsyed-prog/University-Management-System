@@ -1,2 +1,1 @@
 301,OOP,core,Ali Hassan,0
-303,Physics Lab,lab,Usman Tariq,0

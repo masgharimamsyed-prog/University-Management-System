@@ -7,9 +7,12 @@
 #include "student.h"
 #include"course.h"
 #include "venue.h"
+#include"section.h"
+#include "assessment.h"
+
 using namespace std;
 
-//Declarations
+//classes Declarations
 class academicEntity;
 class teacher;
 class student;
@@ -27,101 +30,7 @@ class assignments;
 class venue;
 class section;
 
-
-
-
-
-
-
-
-class Assessment {
-protected:
-    course* Cobj = nullptr;
-    string type;
-    float totalMarks=0;
-    float obtainMarks=0;
-public:
-    virtual void display() = 0;
-    friend void addAssessment();
-    friend void saveDataforAssessment();
-    friend void showAssessmentofStudent();
-};
-class finals : public Assessment {
-public:
-    finals(course* Cobj, float totalMarks, float obtainMarks) {
-        this->Cobj = Cobj;
-        this->totalMarks = totalMarks;
-        this->obtainMarks = obtainMarks;
-        this->type = "finals";
-    }
-
-    void display() {
-        cout << "coursename:" << Cobj->name
-            << ",type:" << type
-            << ",total:" << totalMarks
-            << ",obtain:" << obtainMarks << endl;
-    }
-};
-class quizzes : public Assessment {
-public:
-    quizzes(course* Cobj, float totalMarks, float obtainMarks) {
-        this->Cobj = Cobj;
-        this->totalMarks = totalMarks;
-        this->obtainMarks = obtainMarks;
-        this->type = "quiz";
-    }
-
-    void display() {
-        cout << "course name:" << Cobj->name
-            << ",type:" << type
-            << ",total:" << totalMarks
-            << ",obtain:" << obtainMarks << endl;
-    }
-};
-class assignments : public Assessment {
-public:
-    assignments(course* Cobj, float totalMarks, float obtainMarks) {
-        this->Cobj = Cobj;
-        this->totalMarks = totalMarks;
-        this->obtainMarks = obtainMarks;
-        this->type = "assignment";
-    }
-
-    void display() {
-        cout << "course name:" << Cobj->name
-            << ",type:" << type
-            << ",total:" << totalMarks
-            << ",obtain:" << obtainMarks << endl;
-    }
-};
-
-
-
-
-class section {
-    int id;
-    course* Cobj;
-    teacher* Tobj;
-    venue* Vobj;
-public:
-    section(int id,course* Cobj,teacher *Tobj,venue* Vobj) {
-        this->id = id;
-        this->Cobj = Cobj;
-        this->Tobj = Tobj;
-        this->Vobj = Vobj;
-    }
-    void display() {
-        cout << "Section ID: " << id
-            << "\nCourse: " << (Cobj != nullptr ? Cobj->name : "No Course")
-            << "\nTeacher: " << (Tobj != nullptr ? Tobj->name : "No Teacher")
-            << "\nVenue: " << (Vobj != nullptr ? to_string(Vobj->id) : "No Venue")
-            << endl;
-    }
-    friend void saveDataforSection();
-    friend void addSections();
-    friend void removeSection();
-    friend void updateSection();
-};
+//for laoding data in my program
 vector<student*> STUDENTS;
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
@@ -129,6 +38,8 @@ vector<venue*>   VENUES;
 vector<Assessment*> ASSESS;
 vector<section*> SECTIONS;
 
+
+//utilities function declaration
 void loadData();
 void removeStudent();
 void removeTeacher();
@@ -156,6 +67,7 @@ void updateCourse();
 void updateVenue();
 void updateSection();
 
+//load data declaration
 void loadDataforTeacher();
 void loadDataforStudent();
 void loadDataforCourse();
@@ -163,6 +75,7 @@ void loadDataforVenue();
 void loadDataforSection();
 void loadDataforAssessment();
 
+//save data declaration
 void saveDataforTeacher();
 void saveDataforStudent();
 void saveDataforCourse();
@@ -170,12 +83,15 @@ void saveDataforVenue();
 void saveDataforSection();
 void saveDataforAssessment();
 
+
+
 static string trim(string s) {
     while (!s.empty() && (s.back() == '\r' || s.back() == '\n' || s.back() == ' '))
         s.pop_back();
     return s;
 }
 
+//load data definitons
 void loadData() {
     loadDataforTeacher();
     loadDataforStudent();
@@ -469,6 +385,7 @@ void loadDataforAssessment() {
   
 }
 
+//saving data definitons
 void saveData() {
     saveDataforTeacher();
     saveDataforStudent();
@@ -547,6 +464,7 @@ void saveDataforAssessment() {
     }
 }
 
+//utilities function definitions
 void addStudent() {
     int    ID, type;
     string name, email;
@@ -1351,76 +1269,365 @@ void updateSection() {
     system("pause");
 }
 
-int main() {
-    loadData();
+//main menuu
+void teacherPage() {
+
     int c;
+
     while (1) {
+
         system("cls");
+
         cout << "\n=====================================\n";
-        cout << "   FAST Academic Office System\n";
+        cout << "            Teacher Page\n";
         cout << "=====================================\n";
-        cout << "1.  Add Student\n";
-        cout << "2.  View Students\n";
-        cout << "3.  Add Teacher\n";
-        cout << "4.  View Teachers\n";
-        cout << "5.  Add Course\n";
-        cout << "6.  View Courses\n";
-        cout << "7.  Register Student in Course\n"; 
-        cout << "8.  Assign Course to Teacher\n";
-        cout << "9.  Add venue\n";
-        cout << "10. show venue\n";
-        cout << "11. show All Sections\n";
-        cout << "12. add Section\n";
-        cout << "13. add assessment\n";
-        cout << "14. show all assements\n";
-        cout << "15. remove student\n";
-        cout << "16. remove teacher\n";
-        cout << "17. remove course\n";
-        cout << "18. remove section\n";
-        cout << "19. remove venue\n";
-        cout << "20. update student\n";
-        cout << "21. update teacher\n";
-        cout << "22. update course\n";
-        cout << "23. update section\n";
-        cout << "24. update venue\n";
-        cout << "25. Exit\n";
-        cout << "Enter Choice: ";
+
+        cout << "1. Add Teacher\n";
+        cout << "2. View Teachers\n";
+        cout << "3. Remove Teacher\n";
+        cout << "4. Update Teacher\n";
+        cout << "5. Assign Course To Teacher\n";
+        cout << "6. Back To Main Menu\n";
+
+        cout << "\nEnter Choice: ";
         cin >> c;
 
         switch (c) {
-        case 1:  addStudent();             break;
-        case 2:  viewStudents();           break;
-        case 3:  addTeacher();             break;
-        case 4:  viewTeachers();           break;
-        case 5:  addCourse();              break;
-        case 6:  viewCourses();            break;
-        case 7:  registerStudentInCourse(); break;
-        case 8:  assignCourseToTeacher();  break;
-        case 9:  addVenue();                 break;
-        case 10: showAllVenues();           break;
-        case 11: showAllSections();         break;
-        case 12: addSections();          break;
-        case 13: addAssessment();          break;  
-        case 14: showAssessmentofStudent();   break;
-        case 15: removeStudent();           break;
-        case 16: removeTeacher();          break;
-        case 17: removeCourse();          break;
-        case 18: removeSection();          break;
-        case 19: removeVenue();          break;
-        case 20: updateStudent(); break;
-        case 21: updateTeacher(); break;
-        case 22: updateCourse(); break;
-        case 23: updateSection(); break;
-        case 24: updateVenue(); break;
-        case 25:
-            saveData();
-            cout << "\nData saved. Program closed.\n";
+
+        case 1:
+            addTeacher();
             break;
+
+        case 2:
+            viewTeachers();
+            break;
+
+        case 3:
+            removeTeacher();
+            break;
+
+        case 4:
+            updateTeacher();
+            break;
+
+        case 5:
+            assignCourseToTeacher();
+            break;
+
+        case 6:
+            return;
+
         default:
             cout << "\nInvalid Choice!\n";
             system("pause");
         }
     }
-    return 0;
 }
 
+void studentPage() {
+
+    int c;
+
+    while (1) {
+
+        system("cls");
+
+        cout << "\n=====================================\n";
+        cout << "            Student Page\n";
+        cout << "=====================================\n";
+
+        cout << "1. Add Student\n";
+        cout << "2. View Students\n";
+        cout << "3. Remove Student\n";
+        cout << "4. Update Student\n";
+        cout << "5. Register Student In Course\n";
+        cout << "6. Back To Main Menu\n";
+
+        cout << "\nEnter Choice: ";
+        cin >> c;
+
+        switch (c) {
+
+        case 1:
+            addStudent();
+            break;
+
+        case 2:
+            viewStudents();
+            break;
+
+        case 3:
+            removeStudent();
+            break;
+
+        case 4:
+            updateStudent();
+            break;
+
+        case 5:
+            registerStudentInCourse();
+            break;
+
+        case 6:
+            return;
+
+        default:
+            cout << "\nInvalid Choice!\n";
+            system("pause");
+        }
+    }
+}
+
+void coursePage() {
+
+    int c;
+
+    while (1) {
+
+        system("cls");
+
+        cout << "\n=====================================\n";
+        cout << "             Course Page\n";
+        cout << "=====================================\n";
+
+        cout << "1. Add Course\n";
+        cout << "2. View Courses\n";
+        cout << "3. Remove Course\n";
+        cout << "4. Update Course\n";
+        cout << "5. Back To Main Menu\n";
+
+        cout << "\nEnter Choice: ";
+        cin >> c;
+
+        switch (c) {
+
+        case 1:
+            addCourse();
+            break;
+
+        case 2:
+            viewCourses();
+            break;
+
+        case 3:
+            removeCourse();
+            break;
+
+        case 4:
+            updateCourse();
+            break;
+
+        case 5:
+            return;
+
+        default:
+            cout << "\nInvalid Choice!\n";
+            system("pause");
+        }
+    }
+}
+
+void venuePage() {
+
+    int c;
+
+    while (1) {
+
+        system("cls");
+
+        cout << "\n=====================================\n";
+        cout << "              Venue Page\n";
+        cout << "=====================================\n";
+
+        cout << "1. Add Venue\n";
+        cout << "2. View Venues\n";
+        cout << "3. Remove Venue\n";
+        cout << "4. Update Venue\n";
+        cout << "5. Back To Main Menu\n";
+
+        cout << "\nEnter Choice: ";
+        cin >> c;
+
+        switch (c) {
+
+        case 1:
+            addVenue();
+            break;
+
+        case 2:
+            showAllVenues();
+            break;
+
+        case 3:
+            removeVenue();
+            break;
+
+        case 4:
+            updateVenue();
+            break;
+
+        case 5:
+            return;
+
+        default:
+            cout << "\nInvalid Choice!\n";
+            system("pause");
+        }
+    }
+}
+
+void sectionPage() {
+
+    int c;
+
+    while (1) {
+
+        system("cls");
+
+        cout << "\n=====================================\n";
+        cout << "             Section Page\n";
+        cout << "=====================================\n";
+
+        cout << "1. Add Section\n";
+        cout << "2. View Sections\n";
+        cout << "3. Remove Section\n";
+        cout << "4. Update Section\n";
+        cout << "5. Back To Main Menu\n";
+
+        cout << "\nEnter Choice: ";
+        cin >> c;
+
+        switch (c) {
+
+        case 1:
+            addSections();
+            break;
+
+        case 2:
+            showAllSections();
+            break;
+
+        case 3:
+            removeSection();
+            break;
+
+        case 4:
+            updateSection();
+            break;
+
+        case 5:
+            return;
+
+        default:
+            cout << "\nInvalid Choice!\n";
+            system("pause");
+        }
+    }
+}
+
+void assessmentPage() {
+
+    int c;
+
+    while (1) {
+
+        system("cls");
+
+        cout << "\n=====================================\n";
+        cout << "           Assessment Page\n";
+        cout << "=====================================\n";
+
+        cout << "1. Add Assessment\n";
+        cout << "2. View Assessments\n";
+        cout << "3. Back To Main Menu\n";
+
+        cout << "\nEnter Choice: ";
+        cin >> c;
+
+        switch (c) {
+
+        case 1:
+            addAssessment();
+            break;
+
+        case 2:
+            showAssessmentofStudent();
+            break;
+
+        case 3:
+            return;
+
+        default:
+            cout << "\nInvalid Choice!\n";
+            system("pause");
+        }
+    }
+}
+
+int main() {
+
+    loadData();
+
+    int c;
+
+    while (1) {
+
+        system("cls");
+
+        cout << "\n=====================================\n";
+        cout << "     FAST Academic Office System\n";
+        cout << "=====================================\n";
+
+        cout << "1. Teacher Page\n";
+        cout << "2. Student Page\n";
+        cout << "3. Course Page\n";
+        cout << "4. Venue Page\n";
+        cout << "5. Section Page\n";
+        cout << "6. Assessment Page\n";
+        cout << "7. Exit\n";
+
+        cout << "\nEnter Choice: ";
+        cin >> c;
+
+        switch (c) {
+
+        case 1:
+            teacherPage();
+            break;
+
+        case 2:
+            studentPage();
+            break;
+
+        case 3:
+            coursePage();
+            break;
+
+        case 4:
+            venuePage();
+            break;
+
+        case 5:
+            sectionPage();
+            break;
+
+        case 6:
+            assessmentPage();
+            break;
+
+        case 7:
+
+            saveData();
+
+            cout << "\nData saved successfully.\n";
+            cout << "Program Closed.\n";
+
+            return 0;
+
+        default:
+
+            cout << "\nInvalid Choice!\n";
+            system("pause");
+        }
+    }
+}
