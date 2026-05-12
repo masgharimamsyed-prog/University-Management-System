@@ -1,5 +1,3 @@
-
-
 #include<iostream>
 #include<vector>
 #include<fstream>
@@ -54,6 +52,7 @@ public:
    friend void addSections();
    friend void loadDataforSection();
    friend void saveDataforSection();
+   friend void addTeacher();
 };
 class student : public academicEntity {
 protected:
@@ -68,7 +67,9 @@ public:
     friend void saveDataforStudent();
     friend void loadDataforAssessment();
     friend void addAssessment();
+    friend void addStudent();
     friend void showAssessmentofStudent();
+    friend void addTeacher();
 };
 class scholarshipStudent : public student {
 protected:
@@ -298,7 +299,7 @@ public:
     }
 
     void display() {
-        cout << "courseid:" << Cobj->name
+        cout << "coursename:" << Cobj->name
             << ",type:" << type
             << ",total:" << totalMarks
             << ",obtain:" << obtainMarks << endl;
@@ -314,7 +315,7 @@ public:
     }
 
     void display() {
-        cout << "courseid:" << Cobj->name
+        cout << "course name:" << Cobj->name
             << ",type:" << type
             << ",total:" << totalMarks
             << ",obtain:" << obtainMarks << endl;
@@ -330,7 +331,7 @@ public:
     }
 
     void display() {
-        cout << "courseid:" << Cobj->name
+        cout << "course name:" << Cobj->name
             << ",type:" << type
             << ",total:" << totalMarks
             << ",obtain:" << obtainMarks << endl;
@@ -356,6 +357,7 @@ public:
    friend void addSections();
    friend void loadDataforSection();
    friend void saveDataforSection();
+   friend void addVenue();
 };
 
 class section {
@@ -378,6 +380,7 @@ public:
             << endl;
     }
     friend void saveDataforSection();
+    friend void addSections();
 };
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
@@ -700,7 +703,7 @@ void loadDataforAssessment() {
             A = new finals(Cobj, t, o);
         }
         else if (type == "quiz") {
-            A = new quizzes(Cobj, t, o);
+            A = new quizzes(Cobj, t, o); 
         }
         else if (type == "assignment") {
             A = new assignments(Cobj, t, o);
@@ -798,7 +801,20 @@ void addStudent() {
     string name, email;
     float  GPA;
 
-    cout << "Enter ID: ";    cin >> ID;
+   
+    bool unique = true;
+    while (unique) {
+        unique = false;
+        cout << "Enter ID: ";    cin >> ID;
+        for (int i = 0; i < STUDENTS.size(); i++) {
+            if (STUDENTS[i]->ID == ID) {
+                unique = true;
+            }
+        }
+        if (unique) {
+            cout << "the id you enter already exist,input again:" << endl;
+        }
+    }
     cout << "Enter Name: ";  cin >> name;
     cout << "Enter Email: "; cin >> email;
     cout << "Enter GPA: ";   cin >> GPA;
@@ -829,7 +845,20 @@ void viewStudents() {
 void addTeacher() {
     int    ID;
     string name, email;
-    cout << "Enter ID: ";    cin >> ID;
+  
+    bool unique = true;
+    while (unique) {
+        unique = false;
+        cout << "Enter ID: ";    cin >> ID;
+        for (int i = 0; i < TEACHERS.size(); i++) {
+            if (TEACHERS[i]->ID == ID) {
+                unique = true;
+            }
+        }
+        if (unique) {
+            cout << "the id you enter already exist,input again:" << endl;
+        }
+    }
     cout << "Enter Name: ";  cin >> name;
     cout << "Enter Email: "; cin >> email;
     TEACHERS.push_back(new teacher(ID, name, email));
@@ -843,7 +872,20 @@ void viewTeachers() {
 void addCourse() {
     int    code, type;
     string name;
-    cout << "Enter Course Code: "; cin >> code;
+    
+    bool unique = true;
+    while (unique) {
+        unique = false;
+        cout << "Enter Course Code: "; cin >> code;
+        for (int i = 0; i < COURSES.size(); i++) {
+            if (COURSES[i]->code == code) {
+                unique = true;
+            }
+        }
+        if (unique) {
+            cout << "the id you enter already exist,input again:" << endl;
+        }
+    }
     cout << "Enter Course Name: "; cin >> name;
 
     cout << "\nEnter Course Type:\n";
@@ -953,8 +995,21 @@ void assignCourseToTeacher() {
 }
 void addVenue() {
     int id;
-    cout << "Enter the ID of venue:" << endl;
-    cin >> id;
+   
+    bool unique = true;
+    while (unique) {
+        unique = false;
+        cout << "Enter the ID of venue:" << endl;
+        cin >> id;
+        for (int i = 0; i < VENUES.size(); i++) {
+            if (VENUES[i]->id == id) {
+                unique = true;
+            }
+        }
+        if (unique) {
+            cout << "the id you enter already exist,input again:" << endl;
+        }
+    }
     int capacity;
     cout << "Enter the capacity of venue:" << endl;
     cin >> capacity;
@@ -993,9 +1048,21 @@ void addSections() {
     int tid;
     int cid;
     int vid;
-    
-    cout << "enter the id od new section" <<endl;
-    cin >> id;
+    bool unique = true;
+    while (unique) {
+        unique = false;
+        cout << "Enter the ID of section:" << endl;
+        cin >> id;
+        for (int i = 0; i < SECTIONS.size(); i++) {
+            if (SECTIONS[i]->id == id) {
+                unique = true;
+            }
+        }
+        if (unique) {
+            cout << "the id you enter already exist,input again:" << endl;
+        }
+    }
+  
   
     bool found =true;
     //teacher
