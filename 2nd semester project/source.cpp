@@ -1,63 +1,31 @@
 #include<iostream>
 #include<vector>
 #include<fstream>
-#include<cstring>
 #include<string>
-class Assessment;
-class student;
+#include "academicEntity.h"
+using namespace std;
+
+//Declarations
+class academicEntity;
 class teacher;
+class student;
+class scholarshipStudent;
+class exchangeStudent;
+class regularStudent;
 class course;
+class core;
+class elective;
+class lab;
+class Assessment;
+class finals;
+class quizzes;
+class assignments;
 class venue;
 class section;
 
-using namespace std;
-class academicEntity {
-protected:
-    int ID=0;
-    string email;
-public:
-    string name;
-    virtual void display() = 0;
-}; 
 
-class teacher : public academicEntity {
-    vector<float> arrayofScore;
-    float avgScore;
-    float score;
-public:
-    teacher(int ID = 0, string name = "", string email = "", float avgScore = 0) {
-        this->score = 0;
-        this->ID = ID;
-        this->name = name;
-        this->email = email;
-        this->avgScore = avgScore;
-    }
-    void display() {
-        cout << "ID:" << ID << ", Name:" << name << ", Email:" << email << ", Avg Score:" << avgScore << endl;
-    }
-    void giveFeedback(float i) {
-        arrayofScore.push_back(i);
-        float sum = 0;
-        for (int j = 0; j < (int)arrayofScore.size(); j++) {
-            sum += arrayofScore[j];
-        }
-        avgScore = sum / arrayofScore.size();
-    }
-    string getname() {
-        return name;
-    }
-    friend void saveDataforTeacher();
-    friend void loadDataforTeacher();
-    friend class section;
-   friend void addSections();
-   friend void loadDataforSection();
-   friend void saveDataforSection();
-   friend void addTeacher();
-  friend void removeTeacher();
-  friend void updateTeacher();
-  friend void updateCourse();
-  friend void updateSection();
-};
+
+
 class student : public academicEntity {
 protected:
     float GPA=0.0;
@@ -354,7 +322,7 @@ public:
         this->capacity = capacity;
         this->hascomp = computer;
     }
-    void display() {
+    void display() const{
         cout << "Room No:" << id << ", Capacity:" << capacity
             << ", Computer:" << (hascomp ? "Yes" : "No") << endl;
     }
@@ -1666,7 +1634,7 @@ int main() {
         case 6:  viewCourses();            break;
         case 7:  registerStudentInCourse(); break;
         case 8:  assignCourseToTeacher();  break;
-        case 9:  addVenue;                 break;
+        case 9:  addVenue();                 break;
         case 10: showAllVenues();           break;
         case 11: showAllSections();         break;
         case 12: addSections();          break;
