@@ -10,7 +10,7 @@ class teacher : public academicEntity {
     float avgScore;
     float score;
 public:
-    teacher(int ID = 0, string name = "", string email = "", float avgScore = 0);
+    teacher(int ID = 0 , string name="", string email="", float avgScore=0.0);
     void display();
     void giveFeedback(float i);
     string getname() const;

@@ -2,7 +2,7 @@
 #include<iostream>
 
 
-    teacher::teacher(int ID = 0, string name = "", string email = "", float avgScore = 0) {
+    teacher::teacher(int ID , string name , string email , float avgScore) {
         this->score = 0;
         this->ID = ID;
         this->name = name;

@@ -3,6 +3,8 @@
 #include<fstream>
 #include<string>
 #include "academicEntity.h"
+#include "teacher.h"
+#include "student.h"
 using namespace std;
 
 //Declarations
@@ -26,106 +28,8 @@ class section;
 
 
 
-class student : public academicEntity {
-protected:
-    float GPA=0.0;
-    string type;
-    vector <Assessment*> assess;
-public:
-   friend void saveDataforAssessment();
-    virtual void display() = 0;
-    virtual void setGPA(float GPA) = 0;
-    friend void viewStudents();
-    friend void saveDataforStudent();
-    friend void loadDataforAssessment();
-    friend void addAssessment();
-    friend void addStudent();
-    friend void showAssessmentofStudent();
-    friend void addTeacher();
-    friend void removeStudent();
-    friend void updateStudent();
-};
-class scholarshipStudent : public student {
-protected:
-    bool probation;
-public:
-    scholarshipStudent(int ID = 0, string name = "", string email = "", float GPA = 0, bool extra = false) {
-        this->ID = ID;
-        this->name = name;
-        this->email = email;
-        this->GPA = GPA;
-        this->type = "scholarship";
-        if (GPA < 3.3 && GPA != 0) {
-            probation = true;
-        }
-        else {
-            probation = false;
-        }
-    }
-    friend void viewStudents();
-    void display() {
-        cout << "ID:" << ID << ", Name:" << name << ", Email:" << email
-            << ", GPA:" << GPA << ", Type:" << type
-            << ", Probation:" << (probation ? "Yes" : "No") << endl;
-    }
-    void setGPA(float GPA) {
-        this->GPA = GPA;
-        probation = (GPA < 3.3);
-    }
-    friend void saveDataforStudent();
-};
-class exchangeStudent : public student {
-protected:
-    bool fail;
-public:
-    exchangeStudent(int ID = 0, string name = "", string email = "", float GPA = 0, bool extra = false) {
-        this->ID = ID;
-        this->name = name;
-        this->email = email;
-        this->type = "exchange";
-        this->GPA = GPA;
-        fail = (GPA < 2);
 
-    }
-    friend void viewStudents();
-    void display() {
-        cout << "ID:" << ID << ", Name:" << name << ", Email:" << email
-            << ", GPA:" << GPA << ", Type:" << type
-            << ", Fail:" << (fail ? "Yes" : "No") << endl;
-    }
-    void setGPA(float GPA) {
-        this->GPA = GPA;
-        fail = (GPA < 2);
-    }
-    friend void saveDataforStudent();
-};
-class regularStudent : public student {
-protected:
-    bool feeStatus;
-public:
-    regularStudent(int ID = 0, string name = "", string email = "", float GPA = 0, bool extra = true) {
-        this->ID = ID;
-        this->name = name;
-        this->email = email;
-        this->type = "regular";
-        this->GPA = GPA;
-        feeStatus = extra;
-    }
-    void display() {
-        cout << "ID:" << ID << ", Name:" << name << ", Email:" << email
-            << ", GPA:" << GPA << ", Type:" << type
-            << ", Fee Paid:" << (feeStatus ? "Yes" : "No") << endl;
-    }
-    friend void viewStudents();
-    void setGPA(float GPA) {
-        this->GPA = GPA;
-    }
-    void setfeeStatus(bool fee) {
-        feeStatus = fee;
-    }
-    friend void saveDataforStudent();
-};
-vector<student*> STUDENTS;
+
 class course {
 protected:
     int noofStudents = 0;
@@ -361,6 +265,7 @@ public:
     friend void removeSection();
     friend void updateSection();
 };
+vector<student*> STUDENTS;
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
 vector<venue*>   VENUES;
@@ -877,7 +782,7 @@ void removeSection() {
     cin >> id;
     for (int i = 0; i < SECTIONS.size(); i++) {
         if (SECTIONS[i]->id == id) {
-            STUDENTS.erase(STUDENTS.begin() + i);
+            SECTIONS.erase(SECTIONS.begin() + i);
         }
 
     }
