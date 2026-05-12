@@ -53,6 +53,7 @@ public:
    friend void loadDataforSection();
    friend void saveDataforSection();
    friend void addTeacher();
+  friend void removeTeacher();
 };
 class student : public academicEntity {
 protected:
@@ -70,6 +71,7 @@ public:
     friend void addStudent();
     friend void showAssessmentofStudent();
     friend void addTeacher();
+    friend void removeStudent();
 };
 class scholarshipStudent : public student {
 protected:
@@ -358,6 +360,7 @@ public:
    friend void loadDataforSection();
    friend void saveDataforSection();
    friend void addVenue();
+   friend void removeVenue();
 };
 
 class section {
@@ -381,6 +384,7 @@ public:
     }
     friend void saveDataforSection();
     friend void addSections();
+    friend void removeSection();
 };
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
@@ -389,6 +393,11 @@ vector<Assessment*> ASSESS;
 vector<section*> SECTIONS;
 
 void loadData();
+void removeStudent();
+void removeTeacher();
+void removeCourse();
+void removeVenue();
+void removeSection();
 void addStudent();
 void viewStudents();
 void addTeacher();
@@ -834,7 +843,67 @@ void addStudent() {
     else if (type == 2) { STUDENTS.push_back(new scholarshipStudent(ID, name, email, GPA)); cout << "\nScholarship Student Added!\n"; }
     else { STUDENTS.push_back(new exchangeStudent(ID, name, email, GPA));   cout << "\nExchange Student Added!\n"; }
 }
-void viewStudents() {
+void removeStudent() {
+    int id;
+    cout << "Enter the id of student you want to remove" << endl;
+    cin >> id;
+    for (int i = 0; i < STUDENTS.size(); i++) {
+        if (STUDENTS[i]->ID == id) {
+            STUDENTS.erase(STUDENTS.begin()+i);
+        }
+
+    }
+    system("pause");
+}
+void removeTeacher() {
+    int id;
+    cout << "Enter the id of teacher you want to remove" << endl;
+    cin >> id;
+    for (int i = 0; i < TEACHERS.size(); i++) {
+        if (TEACHERS[i]->ID == id) {
+            TEACHERS.erase(TEACHERS.begin() + i);
+        }
+
+    }
+    system("pause");
+}
+void removeVenue() {
+    int id;
+    cout << "Enter the id of venue you want to remove" << endl;
+    cin >> id;
+    for (int i = 0; i < VENUES.size(); i++) {
+        if (VENUES[i]->id == id) {
+            VENUES.erase(VENUES.begin() + i);
+        }
+
+    }
+    system("pause");
+}
+void removeCourse() {
+    int id;
+    cout << "Enter the id of course you want to remove" << endl;
+    cin >> id;
+    for (int i = 0; i < COURSES.size(); i++) {
+        if (COURSES[i]->code == id) {
+            COURSES.erase(COURSES.begin() + i);
+        }
+
+    }
+    system("pause");
+}
+void removeSection() {
+    int id;
+    cout << "Enter the id of section you want to remove" << endl;
+    cin >> id;
+    for (int i = 0; i < SECTIONS.size(); i++) {
+        if (SECTIONS[i]->id == id) {
+            STUDENTS.erase(STUDENTS.begin() + i);
+        }
+
+    }
+    system("pause");
+}
+void viewStudents(){
     if (STUDENTS.size() == 0) {
         cout << "no student" << endl;
     }
@@ -870,7 +939,8 @@ void viewTeachers() {
     system("pause");
 }
 void addCourse() {
-    int    code, type;
+    int  code;
+        int type;
     string name;
     
     bool unique = true;
@@ -1257,7 +1327,12 @@ int main() {
         cout << "12. add Section\n";
         cout << "13. add assessment\n";
         cout << "14. show all assements\n";
-        cout << "15. Exit\n";
+        cout << "15. remove student\n";
+        cout << "16. remove teacher\n";
+        cout << "17. remove course\n";
+        cout << "18. remove section\n";
+        cout << "19. remove venue\n";
+        cout << "20. Exit\n";
         cout << "Enter Choice: ";
         cin >> c;
 
@@ -1276,7 +1351,12 @@ int main() {
         case 12: addSections();          break;
         case 13: addAssessment();          break;  
         case 14: showAssessmentofStudent();          break;
-        case 15:
+        case 15: removeStudent();           break;
+        case 16: removeTeacher();          break;
+        case 17: removeCourse();          break;
+        case 18: removeSection();          break;
+        case 19: removeVenue();          break;
+        case 20:
             saveData();
             cout << "\nData saved. Program closed.\n";
             return 0;
