@@ -54,6 +54,9 @@ public:
    friend void saveDataforSection();
    friend void addTeacher();
   friend void removeTeacher();
+  friend void updateTeacher();
+  friend void updateCourse();
+  friend void updateSection();
 };
 class student : public academicEntity {
 protected:
@@ -72,6 +75,7 @@ public:
     friend void showAssessmentofStudent();
     friend void addTeacher();
     friend void removeStudent();
+    friend void updateStudent();
 };
 class scholarshipStudent : public student {
 protected:
@@ -178,7 +182,7 @@ public:
    friend void addSections();
   friend void loadDataforSection();
   friend void saveDataforSection();
-  
+  friend void updateCourse();
 };
 class core : public course {
 public:
@@ -361,6 +365,8 @@ public:
    friend void saveDataforSection();
    friend void addVenue();
    friend void removeVenue();
+   friend void updateVenue();
+   friend void updateSection();
 };
 
 class section {
@@ -385,6 +391,7 @@ public:
     friend void saveDataforSection();
     friend void addSections();
     friend void removeSection();
+    friend void updateSection();
 };
 vector<teacher*> TEACHERS;
 vector<course*>  COURSES;
@@ -413,6 +420,11 @@ void showAllSections();
 void addSections();
 void addAssessment();
 void showAssessmentofStudent();
+void updateStudent();
+void updateTeacher();
+void updateCourse();
+void updateVenue();
+void updateSection();
 
 void loadDataforTeacher();
 void loadDataforStudent();
@@ -1303,7 +1315,311 @@ void showAssessmentofStudent() {
 
     system("pause");
 }
+void updateStudent() {
 
+    int id;
+
+    cout << "Enter Student ID to update: ";
+    cin >> id;
+
+    student* Sobj = nullptr;
+
+    for (int i = 0; i < STUDENTS.size(); i++) {
+
+        if (STUDENTS[i]->ID == id) {
+
+            Sobj = STUDENTS[i];
+            break;
+        }
+    }
+
+    if (Sobj == nullptr) {
+
+        cout << "Student not found\n";
+        return;
+    }
+
+    string name;
+    string email;
+    float GPA;
+
+    cout << "Enter New Name: ";
+    cin >> name;
+
+    cout << "Enter New Email: ";
+    cin >> email;
+
+    cout << "Enter New GPA: ";
+    cin >> GPA;
+
+    Sobj->name = name;
+    Sobj->email = email;
+    Sobj->setGPA(GPA);
+
+    if (Sobj->type == "regular") {
+
+        int fee;
+
+        cout << "Fee Paid? (1 = Yes, 0 = No): ";
+        cin >> fee;
+
+        regularStudent* ptr = (regularStudent*)Sobj;
+
+        ptr->setfeeStatus(fee);
+    }
+
+    cout << "Student updated successfully\n";
+
+    system("pause");
+}
+void updateTeacher() {
+
+    int id;
+
+    cout << "Enter Teacher ID to update: ";
+    cin >> id;
+
+    teacher* Tobj = nullptr;
+
+    for (int i = 0; i < TEACHERS.size(); i++) {
+
+        if (TEACHERS[i]->ID == id) {
+
+            Tobj = TEACHERS[i];
+            break;
+        }
+    }
+
+    if (Tobj == nullptr) {
+
+        cout << "Teacher not found\n";
+        return;
+    }
+
+    string name;
+    string email;
+
+    cout << "Enter New Name: ";
+    cin >> name;
+
+    cout << "Enter New Email: ";
+    cin >> email;
+
+    Tobj->name = name;
+    Tobj->email = email;
+
+    cout << "Teacher updated successfully\n";
+
+    system("pause");
+}
+void updateCourse() {
+
+    int code;
+
+    cout << "Enter Course Code to update: ";
+    cin >> code;
+
+    course* Cobj = nullptr;
+
+    for (int i = 0; i < COURSES.size(); i++) {
+
+        if (COURSES[i]->code == code) {
+
+            Cobj = COURSES[i];
+            break;
+        }
+    }
+
+    if (Cobj == nullptr) {
+
+        cout << "Course not found\n";
+        return;
+    }
+
+    string name;
+
+    cout << "Enter New Course Name: ";
+    cin >> name;
+
+    Cobj->name = name;
+
+    cout << "\nAvailable Teachers:\n";
+
+    for (int i = 0; i < TEACHERS.size(); i++) {
+
+        TEACHERS[i]->display();
+    }
+
+    int tid;
+
+    cout << "Enter New Teacher ID: ";
+    cin >> tid;
+
+    teacher* Tobj = nullptr;
+
+    for (int i = 0; i < TEACHERS.size(); i++) {
+
+        if (TEACHERS[i]->ID == tid) {
+
+            Tobj = TEACHERS[i];
+            break;
+        }
+    }
+
+    if (Tobj == nullptr) {
+
+        cout << "Teacher not found\n";
+        return;
+    }
+
+    Cobj->assignCourse(Tobj);
+
+    cout << "Course updated successfully\n";
+
+    system("pause");
+}
+void updateVenue() {
+
+    int id;
+
+    cout << "Enter Venue ID to update: ";
+    cin >> id;
+
+    venue* Vobj = nullptr;
+
+    for (int i = 0; i < VENUES.size(); i++) {
+
+        if (VENUES[i]->id == id) {
+
+            Vobj = VENUES[i];
+            break;
+        }
+    }
+
+    if (Vobj == nullptr) {
+
+        cout << "Venue not found\n";
+        return;
+    }
+
+    int capacity;
+    int choice;
+
+    cout << "Enter New Capacity: ";
+    cin >> capacity;
+
+    cout << "Has Computers? (1 = Yes, 0 = No): ";
+    cin >> choice;
+
+    Vobj->capacity = capacity;
+
+    if (choice == 1) {
+
+        Vobj->hascomp = true;
+    }
+    else {
+
+        Vobj->hascomp = false;
+    }
+
+    cout << "Venue updated successfully\n";
+
+    system("pause");
+}
+void updateSection() {
+
+    int id;
+
+    cout << "Enter Section ID to update: ";
+    cin >> id;
+
+    section* Sobj = nullptr;
+
+    for (int i = 0; i < SECTIONS.size(); i++) {
+
+        if (SECTIONS[i]->id == id) {
+
+            Sobj = SECTIONS[i];
+            break;
+        }
+    }
+
+    if (Sobj == nullptr) {
+
+        cout << "Section not found\n";
+        return;
+    }
+
+    int cid;
+    int tid;
+    int vid;
+
+    course* Cobj = nullptr;
+    teacher* Tobj = nullptr;
+    venue* Vobj = nullptr;
+
+    cout << "Enter New Course Code: ";
+    cin >> cid;
+
+    for (int i = 0; i < COURSES.size(); i++) {
+
+        if (COURSES[i]->code == cid) {
+
+            Cobj = COURSES[i];
+            break;
+        }
+    }
+
+    if (Cobj == nullptr) {
+
+        cout << "Course not found\n";
+        return;
+    }
+
+    cout << "Enter New Teacher ID: ";
+    cin >> tid;
+
+    for (int i = 0; i < TEACHERS.size(); i++) {
+
+        if (TEACHERS[i]->ID == tid) {
+
+            Tobj = TEACHERS[i];
+            break;
+        }
+    }
+
+    if (Tobj == nullptr) {
+
+        cout << "Teacher not found\n";
+        return;
+    }
+
+    cout << "Enter New Venue ID: ";
+    cin >> vid;
+
+    for (int i = 0; i < VENUES.size(); i++) {
+
+        if (VENUES[i]->id == vid) {
+
+            Vobj = VENUES[i];
+            break;
+        }
+    }
+
+    if (Vobj == nullptr) {
+
+        cout << "Venue not found\n";
+        return;
+    }
+
+    Sobj->Cobj = Cobj;
+    Sobj->Tobj = Tobj;
+    Sobj->Vobj = Vobj;
+
+    cout << "Section updated successfully\n";
+
+    system("pause");
+}
 
 int main() {
     loadData();
@@ -1332,7 +1648,12 @@ int main() {
         cout << "17. remove course\n";
         cout << "18. remove section\n";
         cout << "19. remove venue\n";
-        cout << "20. Exit\n";
+        cout << "20. update student\n";
+        cout << "21. update teacher\n";
+        cout << "22. update course\n";
+        cout << "23. update section\n";
+        cout << "24. update venue\n";
+        cout << "25. Exit\n";
         cout << "Enter Choice: ";
         cin >> c;
 
@@ -1347,19 +1668,24 @@ int main() {
         case 8:  assignCourseToTeacher();  break;
         case 9:  addVenue;                 break;
         case 10: showAllVenues();           break;
-        case 11: showAllSections();          break;
+        case 11: showAllSections();         break;
         case 12: addSections();          break;
         case 13: addAssessment();          break;  
-        case 14: showAssessmentofStudent();          break;
+        case 14: showAssessmentofStudent();   break;
         case 15: removeStudent();           break;
         case 16: removeTeacher();          break;
         case 17: removeCourse();          break;
         case 18: removeSection();          break;
         case 19: removeVenue();          break;
-        case 20:
+        case 20: updateStudent(); break;
+        case 21: updateTeacher(); break;
+        case 22: updateCourse(); break;
+        case 23: updateSection(); break;
+        case 24: updateVenue(); break;
+        case 25:
             saveData();
             cout << "\nData saved. Program closed.\n";
-            return 0;
+            break;
         default:
             cout << "\nInvalid Choice!\n";
             system("pause");
