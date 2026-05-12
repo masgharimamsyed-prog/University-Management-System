@@ -5,6 +5,7 @@
 #include "academicEntity.h"
 #include "teacher.h"
 #include "student.h"
+#include"course.h"
 using namespace std;
 
 //Declarations
@@ -30,131 +31,8 @@ class section;
 
 
 
-class course {
-protected:
-    int noofStudents = 0;
-    vector<student*> itsStudents;
-    string type;
-    teacher* obj = nullptr;
-public:
-    int code=0;
-    string name;
-    virtual void assignCourse(teacher* obj) = 0;
-    virtual void display() = 0;
-    virtual void showitsStudents() = 0;
-    friend void assignCourseToTeacher();
-    virtual void AddingStudenttoCourse(student* obj) = 0;
-    friend void registerStudentInCourse();
-    void setno(int i) {
-        noofStudents = i;
-    }
-    friend void saveDataforCourse();
-    friend void loadDataforCourse();
-    friend class section;
-   friend void addSections();
-  friend void loadDataforSection();
-  friend void saveDataforSection();
-  friend void updateCourse();
-};
-class core : public course {
-public:
-    core(int code, string name, teacher* obj) {
-        this->code = code;
-        this->name = name;
-        this->obj = obj;
-        this->type = "core";
-    }
-    friend void saveDataforCourse();
-    void display() {
-        cout << "Code:" << code << ", Name:" << name << ", Type:" << type
-            << ", Teacher:" << (obj ? obj->name : "None") << endl;
-    }
-    void showitsStudents() {
-        for (int i = 0; i < (int)itsStudents.size(); i++) {
-            cout << "  Student " << i + 1 << ": ";
-            itsStudents[i]->display();
-        }
-    }
-    void assignCourse(teacher* obj) {
-        this->obj = obj;
-    }
-    void AddingStudenttoCourse(student* obj) {
-        if ((int)itsStudents.size() < 30) {
-            noofStudents++;
-            itsStudents.push_back(obj);
-        }
-        else {
-            cout << "No more seats in this course." << endl;
-        }
-    }
-    friend void saveDataforAssessment();
-};
-class elective : public course {
-public:
-    elective(int code, string name, teacher* obj) {
-        this->code = code;
-        this->name = name;
-        this->obj = obj;
-        this->type = "elective";
-    }
-    friend void saveDataforCourse();
-    void display() {
-        cout << "Code:" << code << ", Name:" << name << ", Type:" << type
-            << ", Teacher:" << (obj ? obj->name : "None") << endl;
-    }
-    void assignCourse(teacher* obj) {
-        this->obj = obj;
-    }
-    void showitsStudents() {
-        for (int i = 0; i < (int)itsStudents.size(); i++) {
-            cout << "  Student " << i + 1 << ": ";
-            itsStudents[i]->display();
-        }
-    }
-    void AddingStudenttoCourse(student* obj) {
-        if ((int)itsStudents.size() < 30) {
-            noofStudents++;
-            itsStudents.push_back(obj);
-        }
-        else {
-            cout << "No more seats in this course." << endl;
-        }
-    }
-    friend void saveDataforAssessment();
-};
-class lab : public course {
-public:
-    lab(int code, string name, teacher* obj) {
-        this->code = code;
-        this->name = name;
-        this->obj = obj;
-        this->type = "lab";
-    }
-    friend void saveDataforCourse();
-    void display() {
-        cout << "Code:" << code << ", Name:" << name << ", Type:" << type
-            << ", Teacher:" << (obj ? obj->name : "None") << endl;
-    }
-    void assignCourse(teacher* obj) {
-        this->obj = obj;
-    }
-    void showitsStudents() {
-        for (int i = 0; i < (int)itsStudents.size(); i++) {
-            cout << "  Student " << i + 1 << ": ";
-            itsStudents[i]->display();
-        }
-    }
-    void AddingStudenttoCourse(student* obj) {
-        if ((int)itsStudents.size() < 30) {
-            noofStudents++;
-            itsStudents.push_back(obj);
-        }
-        else {
-            cout << "No more seats in this course." << endl;
-        }
-    }
-    friend void saveDataforAssessment();
-};
+
+
 class Assessment {
 protected:
     course* Cobj = nullptr;
