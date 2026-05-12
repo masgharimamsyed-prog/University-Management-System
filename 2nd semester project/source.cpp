@@ -6,6 +6,7 @@
 #include "teacher.h"
 #include "student.h"
 #include"course.h"
+#include "venue.h"
 using namespace std;
 
 //Declarations
@@ -93,31 +94,9 @@ public:
             << ",obtain:" << obtainMarks << endl;
     }
 };
-class venue {
-protected:
-    int id;
-    int capacity;
-    bool hascomp;
-public:
-    venue(int roomno = 0, int capacity = 0, bool computer = 0) {
-        this->id = roomno;
-        this->capacity = capacity;
-        this->hascomp = computer;
-    }
-    void display() const{
-        cout << "Room No:" << id << ", Capacity:" << capacity
-            << ", Computer:" << (hascomp ? "Yes" : "No") << endl;
-    }
-   friend void saveDataforVenue();
-   friend class section;
-   friend void addSections();
-   friend void loadDataforSection();
-   friend void saveDataforSection();
-   friend void addVenue();
-   friend void removeVenue();
-   friend void updateVenue();
-   friend void updateSection();
-};
+
+
+
 
 class section {
     int id;
