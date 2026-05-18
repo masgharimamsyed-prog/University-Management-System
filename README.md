@@ -1,237 +1,205 @@
-# Academic Office Management System
+Academic Office Management System
+Overview
 
-## Overview
+The Academic Office Management System is a console-based C++ application built using Object-Oriented Programming (OOP) principles. It simulates a complete academic environment where students, teachers, courses, venues, sections, and assessments are managed through a structured menu-driven interface.
 
-The Academic Office Management System is a console-based C++ application developed using Object-Oriented Programming (OOP) concepts. The system is designed to manage academic entities such as students, teachers, courses, sections, venues, and assessments.
+The system uses dynamic memory allocation, STL vectors, and file handling to ensure data persistence across program runs.
 
-The project also includes file handling functionality, allowing all records to be saved permanently and loaded automatically whenever the program starts.
+System Architecture
 
----
+The project is divided into modular pages, each handling a specific domain:
 
-# Features
+Teacher Management Page
+Student Management Page
+Course Management Page
+Venue Management Page
+Section Management Page
+Assessment Management Page
 
-## Student Management
-- Add new students
-- View all students
-- Support for multiple student types:
-  - Regular Students
-  - Scholarship Students
-  - Exchange Students
-- GPA management
-- Scholarship probation checking
-- Exchange student fail status checking
-- Fee status management
+Each page provides CRUD operations (Create, Read, Update, Delete) with validation.
 
-## Teacher Management
-- Add teachers
-- View teacher records
-- Teacher feedback system
-- Average teacher score calculation
+Features
+Student Management
+Add student (Regular / Scholarship / Exchange)
+View all students
+Remove student
+Update student details
+Register student in courses
+GPA tracking
+Fee status handling (for regular students)
+Teacher Management
+Add teacher
+View teacher list
+Remove teacher
+Update teacher details
+Assign course to teacher
+Teacher-course mapping
+Course Management
+Add course (Core / Elective / Lab)
+View all courses
+Remove course
+Update course details
+Assign teacher to course
+Register students in courses
+Display enrolled students
+Venue Management
+Add venue
+View venues
+Remove venue
+Update venue
+Manage capacity
+Computer lab availability flag
+Section Management
+Create sections
+Assign:
+Course
+Teacher
+Venue
+View all sections
+Remove sections
+Update section mapping
+Assessment Management
+Add assessment:
+Finals
+Quizzes
+Assignments
+Link assessment with student and course
+View student assessments
+File Handling System
 
-## Course Management
-- Add courses
-- View available courses
-- Assign teachers to courses
-- Register students in courses
-- Support for multiple course types:
-  - Core Courses
-  - Elective Courses
-  - Lab Courses
+All data is stored permanently using text files:
 
-## Venue Management
-- Add venues
-- View all venues
-- Manage venue capacity
-- Computer lab availability checking
+Students.txt
+Teachers.txt
+Courses.txt
+Venues.txt
+Sections.txt
+Assessments.txt
+Data Behavior
+Data loads automatically on program start (loadData())
+Data saves automatically before exit (saveData())
+Technologies Used
+C++ Programming Language
+Object-Oriented Programming (OOP)
+Inheritance
+Polymorphism
+Abstraction
+Encapsulation
+STL (Vectors)
+Dynamic Memory Allocation (new/delete)
+File Handling
+Menu-driven system design
+Class Structure
+Base Classes
+academicEntity
+student
+course
+Assessment
+Student Hierarchy
+regularStudent
+scholarshipStudent
+exchangeStudent
+Course Hierarchy
+core
+elective
+lab
+Assessment Hierarchy
+finals
+quizzes
+assignments
+System Pages (Menu Design)
+Main Menu
+Teacher Page
+Student Page
+Course Page
+Venue Page
+Section Page
+Assessment Page
+Exit (Auto Save)
+Teacher Page
+Add Teacher
+View Teachers
+Remove Teacher
+Update Teacher
+Assign Course
+Student Page
+Add Student
+View Students
+Remove Student
+Update Student
+Register Student in Course
+Course Page
+Add Course
+View Courses
+Remove Course
+Update Course
+Venue Page
+Add Venue
+View Venues
+Remove Venue
+Update Venue
+Section Page
+Add Section
+View Sections
+Remove Section
+Update Section
+Assessment Page
+Add Assessment
+View Student Assessments
+Key Functional Logic
+Data Validation
+Ensures unique IDs for:
+Students
+Teachers
+Courses
+Venues
+Sections
+Relationship Mapping
+Students ↔ Courses (registration)
+Teachers ↔ Courses (assignment)
+Courses ↔ Venues (sections)
+Students ↔ Assessments
+Memory Management
+Uses dynamic allocation (new)
+Stores objects in STL vectors
+Prevents duplicate entries using ID checks
+Main Functional Highlights
+Add Operations
+Create entities with validation
+Assign relationships during creation
+Remove Operations
+Deletes objects from vectors using ID matching
+Update Operations
+Modify existing records safely
+Maintain relationships during updates
+View Operations
+Displays structured data for each module
+Future Improvements
+Database integration (MySQL / SQLite)
+GUI (Qt / Windows Forms)
+Login system (Admin / Student / Teacher)
+Attendance system
+CGPA calculation system
+Timetable generator
+Search and filter system
+Smart memory management (smart pointers)
+Role-based access control
+Learning Outcomes
 
-## Section Management
-- Create sections
-- Link courses, teachers, and venues
-- Display all sections
+This project demonstrates:
 
-## Assessment Management
-- Add student assessments
-- Support for:
-  - Finals
-  - Quizzes
-  - Assignments
-- Store total and obtained marks
-- Display assessments of individual students
-
-## File Handling
-The system stores all data in text files:
-
-- `Students.txt`
-- `Teachers.txt`
-- `Courses.txt`
-- `Venues.txt`
-- `Sections.txt`
-- `Assessments.txt`
-
-All records are:
-- Automatically loaded at program startup
-- Automatically saved before exiting the program
-
----
-
-# Technologies Used
-
-- Language: C++
-- Concepts:
-  - Object-Oriented Programming (OOP)
-  - Inheritance
-  - Polymorphism
-  - Abstraction
-  - Encapsulation
-  - Friend Functions
-  - File Handling
-  - Dynamic Memory Allocation
-  - STL Vectors
-
----
-
-# Class Structure
-
-## Base Classes
-- `academicEntity`
-- `student`
-- `course`
-- `Assessment`
-
-## Derived Student Classes
-- `regularStudent`
-- `scholarshipStudent`
-- `exchangeStudent`
-
-## Derived Course Classes
-- `core`
-- `elective`
-- `lab`
-
-## Derived Assessment Classes
-- `finals`
-- `quizzes`
-- `assignments`
-
----
-
-# Project Structure
-
-```bash
-├── main.cpp
-├── Students.txt
-├── Teachers.txt
-├── Courses.txt
-├── Venues.txt
-├── Sections.txt
-├── Assessments.txt
-└── README.md
-```
-
----
-
-# How to Run
-
-## Using Visual Studio
-1. Open the project in Visual Studio
-2. Build the project
-3. Run the application
-
-## Using g++
-
-```bash
-g++ main.cpp -o AcademicSystem
-./AcademicSystem
-```
-
----
-
-# Main Menu
-
-```text
-1.  Add Student
-2.  View Students
-3.  Add Teacher
-4.  View Teachers
-5.  Add Course
-6.  View Courses
-7.  Register Student in Course
-8.  Assign Course to Teacher
-9.  Add Venue
-10. Show Venues
-11. Show All Sections
-12. Add Section
-13. Add Assessment
-14. Show Student Assessments
-15. Exit
-```
-
----
-
-# OOP Concepts Implemented
-
-## Inheritance
-Used in:
-- Student hierarchy
-- Course hierarchy
-- Assessment hierarchy
-
-## Polymorphism
-Implemented through:
-- Virtual functions
-- Function overriding
-
-## Abstraction
-Abstract base classes:
-- `academicEntity`
-- `student`
-- `course`
-- `Assessment`
-
-## Encapsulation
-Protected and private members are used to secure and organize data.
-
----
-
-# Future Improvements
-
-Possible future enhancements include:
-
-- Graphical User Interface (GUI)
-- Database integration using MySQL or SQLite
-- Login system for students, teachers, and admin
-- Attendance management
-- CGPA calculation
-- Timetable generation
-- Advanced search and filtering
-- Better exception handling
-- Smart pointers for memory management
-
----
-
-# Learning Outcomes
-
-This project helped in understanding:
-
-- Real-world implementation of OOP concepts
-- File handling in C++
-- Dynamic object management
-- Class relationships and inheritance
-- Menu-driven application design
-- Data persistence techniques
-
----
-
-# Author
+Real-world OOP system design
+Modular programming using functions
+Data persistence using file handling
+Relationship management between entities
+Menu-driven architecture design
+Memory and resource management in C++
+Author
 
 Developed by Asghar
 
-Academic Project — FAST Academic Office System
+FAST Academic Project — Academic Office Management System
 
----
+Conclusion
 
-# Conclusion
-
-The Academic Office Management System is a structured and modular C++ project that demonstrates the practical implementation of Object-Oriented Programming concepts along with file handling and dynamic data management.
-
-The project provides a simplified academic management solution while maintaining scalability and readability in code design.
+This system is a structured academic management simulation built in C++. It demonstrates how real-world academic operations can be modeled using object-oriented programming, modular design, and persistent storage mechanisms.
